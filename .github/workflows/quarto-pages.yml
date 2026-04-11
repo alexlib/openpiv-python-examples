@@ -46,19 +46,10 @@ jobs:
         run: |
           ruff check marimo/ openpiv-tutorials/
 
-      - name: Render
-        run: |
-          cd openpiv-tutorials
-          quarto render --to html
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Render and Publish
+        uses: quarto-dev/quarto-actions/publish@v2
         with:
-          path: openpiv-tutorials/docs
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          target: gh-pages
+          path: openpiv-tutorials
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
