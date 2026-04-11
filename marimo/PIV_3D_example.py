@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -195,7 +195,7 @@ def _(arr, hide, np, replace_nans, scatter_3D):
     arr_show[hide] = np.nan
     fig9 = scatter_3D(arr_show, size=50, sca_args={'alpha': 0.6})
     # replacing outliers
-    arr_1 = replace_nans(arr, max_iter=2, tol=2, kernel_size=2, method='disk")
+    arr_1 = replace_nans(arr, max_iter=2, tol=2, kernel_size=2, method="disk")
     return arr_1, fig9
 
 
@@ -248,14 +248,14 @@ def _():
 def _(folder, os):
     if not os.path.exists(folder): 
         import git 
-        repo = git.Repo.clone_from("https://github.com/fabrylab/3D_piv_example_data.git", './test_3d', branch='master")
+        repo = git.Repo.clone_from("https://github.com/fabrylab/3D_piv_example_data.git", './test_3d', branch="master")
     return
 
 
 @app.cell
 def _(folder, os):
     if not os.path.exists(folder):
-        raise FileNotFoundError("path to 3d piv data '%s' does not exists\n"
+        raise FileNotFoundError("path to 3d piv data "%s" does not exist\n")
                                 ". Please download the data from https://github.com/fabrylab/3D_piv_example_data.git" % folder)
     # stack properties
     # factors for voxel size
@@ -345,7 +345,7 @@ def _(
 ):
     # filtering
     mask = sig2noise_val(sig2noise_1, threshold=signoise_filter)
-    uf, vf, wf = replace_outliers(u_2, v_2, mask, w=w_2, max_iter=1, tol=100, kernel_size=2, method='disk")
+    uf, vf, wf = replace_outliers(u_2, v_2, mask, w=w_2, max_iter=1, tol=100, kernel_size=2, method="disk")
     return uf, vf, wf
 
 

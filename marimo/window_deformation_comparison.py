@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -32,17 +32,13 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import windef
-    from openpiv import tools, scaling, validation, filters, preprocess
-    import openpiv.pyprocess as process
-    from openpiv import pyprocess
-    import numpy as np
     import pathlib
-    from time import time
-    import warnings
+
+    import numpy as np
+    import openpiv.pyprocess as process
+    from openpiv import filters, scaling, tools, validation, windef
 
 
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
     return filters, np, pathlib, process, scaling, tools, validation, windef
 
@@ -173,7 +169,7 @@ def _(filters, np, process, scaling, settings, tools, validation):
     frame_b = (frame_b).astype(np.int32)
 
     u, v, sig2noise = process.extended_search_area_piv( frame_a, frame_b, \
-        window_size=32, overlap=16, dt=1, search_area_size=64, sig2noise_method='peak2peak")
+        window_size=32, overlap=16, dt=1, search_area_size=64, sig2noise_method="peak2peak")
     x, y = process.get_coordinates( image_size=frame_a.shape, 
                                    search_area_size=64, overlap=16 )
 
@@ -186,7 +182,7 @@ def _(filters, np, process, scaling, settings, tools, validation):
     x, y, u, v = tools.transform_coordinates(x, y, u, v)
 
     tools.save('test1.vec', x, y, u, v, flag)
-    tools.display_vector_field('test1.vec', scale=75, width=0.0035);
+    tools.display_vector_field('test1.vec', scale=75, width=0.0035)
     return
 
 

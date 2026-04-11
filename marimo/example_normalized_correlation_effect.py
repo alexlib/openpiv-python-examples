@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -32,10 +32,11 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, scaling, validation, filters
-    import numpy as np
     import glob
+
     import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, pyprocess, scaling, tools, validation
     # '%matplotlib inline' command supported automatically in marimo
     return filters, glob, np, plt, pyprocess, scaling, tools, validation
 
@@ -89,7 +90,7 @@ def _(
         mask = validation.sig2noise_val(sig2noise, threshold = 1.0 )
         plt.figure()
         plt.hist(sig2noise.flatten(),51)
-        plt.ylabel('Signal to noise ratio")
+        plt.ylabel("Signal to noise ratio")
         u, v = filters.replace_outliers( u, v, mask, method='localmean', 
                                         max_iter=1, kernel_size=2)
         x, y, u, v = scaling.uniform(x, y, u, v, scaling_factor = 1. )
@@ -109,7 +110,7 @@ def _(glob, openpiv_default_run):
     alist_filter = ['jpg','bmp','png','tif','tiff']
 
     # all test cases in /openpiv/examples/
-    list_of_files = glob.glob(test3/*.*")
+    list_of_files = glob.glob("data/test3/*.*")
     list_of_files.sort()
     list_of_images = [f for f in list_of_files if f[-3:] in alist_filter]
     list_of_images.sort()

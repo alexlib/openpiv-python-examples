@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -49,13 +49,6 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv.pyprocess import (
-        extended_search_area_piv,
-        get_coordinates,
-        fft_correlate_images,
-        moving_window_array,
-    )
-    from openpiv.tools import imread, save, display_vector_field
 
     return
 
@@ -69,18 +62,18 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
     from matplotlib.pyplot import (
-        contourf,
+        close,
         colorbar,
+        contourf,
         figure,
+        imshow,
         show,
         title,
         xlabel,
         ylabel,
-        imshow,
-        close,
     )
 
     return (
@@ -199,14 +192,6 @@ def _(plot, subplots, u, v, x, y):
 
 @app.cell
 def _():
-    from openpiv.pyprocess import (
-        extended_search_area_piv,
-        get_coordinates,
-        fft_correlate_images,
-        moving_window_array,
-        get_field_shape,
-    )
-    from openpiv.tools import imread, save, display_vector_field
 
     return
 

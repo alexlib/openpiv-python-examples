@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -43,14 +43,13 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
-    from skimage.registration import phase_cross_correlation
-    from skimage import feature
     # from skimage.feature.phase_cross_correlation import _upsampled_dft
     from scipy.ndimage import fourier_shift
     from skimage.exposure import match_histograms
+    from skimage.registration import phase_cross_correlation
 
     return fourier_shift, match_histograms, np, phase_cross_correlation, plt
 
@@ -66,23 +65,21 @@ app._unparsable_cell(
 
 @app.cell
 def _():
-    from scipy.fft import rfft2, rfftn
 
     return
 
 
 @app.cell
 def _():
-    from openpiv.pyprocess import find_subpixel_peak_position
-    from openpiv.pyprocess import normalize_intensity, fft_correlate_images
+    from openpiv.pyprocess import fft_correlate_images, find_subpixel_peak_position
 
     return fft_correlate_images, find_subpixel_peak_position
 
 
 @app.cell
 def _(fourier_shift, imread, match_histograms, np):
-    a = imread(test11/A001_1.tif")
-    # b = imread(data/PIVChallenge2001_A/A001_2.tif")
+    a = imread("data/test11/A001_1.tif")
+    # b = imread("data/PIVChallenge2001_A/A001_2.tif")
     a = a[:32,:32].copy()
     a[16:18,16:18] = 255
     # b = b[:32,:32]
@@ -93,7 +90,7 @@ def _(fourier_shift, imread, match_histograms, np):
     # The shift corresponds to the pixel offset relative to the reference image
     b = fourier_shift(np.fft.fftn(a), shift)
     b = np.fft.ifftn(b).real
-    b = match_histograms(b,a).astype('uint8")
+    b = match_histograms(b,a).astype("uint8")
     # b = b + np.linspace(10,85,32)
     return a, b, shift
 
@@ -158,7 +155,7 @@ def _(c1, c2, c3, c4, colorbar, find_subpixel_peak_position, np, plt, shift):
         colorbar(s, ax=ax[counter])
         default_peak_position = np.floor(np.array(c[0, :, :].shape) / 2)
         i = np.array(find_subpixel_peak_position(c[0, :, :]))
-        ax[counter].plot(i[1], i[0], 'rx")
+        ax[counter].plot(i[1], i[0], "rx")
         print(np.array(i - default_peak_position), np.sum(np.abs(np.array(i - default_peak_position) - np.array(shift))))
         counter = counter + 1
     return
@@ -174,32 +171,32 @@ def _(a_1, b_1, np, phase_cross_correlation, plt):
     ax1 = plt.subplot(1, 3, 1)
     ax2 = plt.subplot(1, 3, 2, sharex=ax1, sharey=ax1)
     ax3 = plt.subplot(1, 3, 3)
-    ax1.imshow(image, cmap='gray")
+    ax1.imshow(image, cmap="gray")
     ax1.set_axis_off()
-    ax1.set_title('Reference image")
-    ax2.imshow(offset_image.real, cmap='gray")
+    ax1.set_title("Reference image")
+    ax2.imshow(offset_image.real, cmap="gray")
     ax2.set_axis_off()
-    ax2.set_title('Offset image")
+    ax2.set_title("Offset image")
     image_product = np.fft.fft2(image).conj() * np.fft.fft2(offset_image)
     cc_image = np.fft.fftshift(np.fft.ifft2(image_product))
     ax3.imshow(cc_image.real)
     ax3.set_axis_off()
     # Show the output of a cross-correlation to show what the algorithm is
     # doing behind the scenes
-    ax3.set_title('Cross-correlation")
+    ax3.set_title("Cross-correlation")
     plt.show()
     print('Detected pixel offset (y, x): {}'.format(shift_1))
     shift_1, error, diffphase = phase_cross_correlation(offset_image, image, upsample_factor=1000)
     fig_1 = plt.figure(figsize=(8, 3))
     ax1 = plt.subplot(1, 3, 1)
     ax2 = plt.subplot(1, 3, 2, sharex=ax1, sharey=ax1)
-    ax1.imshow(image, cmap='gray")
+    ax1.imshow(image, cmap="gray")
     ax1.set_axis_off()
-    ax1.set_title('Reference image")
+    ax1.set_title("Reference image")
     # subpixel precision
-    ax2.imshow(offset_image.real, cmap='gray")
+    ax2.imshow(offset_image.real, cmap="gray")
     ax2.set_axis_off()
-    ax2.set_title('Offset image")
+    ax2.set_title("Offset image")
     plt.show()
     # ax3 = plt.subplot(1, 3, 3)
     # Calculate the upsampled DFT, again to show what the algorithm is doing

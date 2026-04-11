@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -17,19 +17,17 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, scaling, filters, validation
-    import numpy as np
     import matplotlib.pyplot as plt
-    import imageio
-    from skimage import img_as_uint
+    import numpy as np
+    from openpiv import filters, pyprocess, scaling, tools, validation
 
     return filters, np, plt, pyprocess, scaling, tools, validation
 
 
 @app.cell
 def _(tools):
-    frame_a = tools.imread("test20/t_23.png")
-    frame_b = tools.imread("test20/t_24.png")
+    frame_a = tools.imread("data/test20/t_23.png")
+    frame_b = tools.imread("data/test20/t_24.png")
     return frame_a, frame_b
 
 

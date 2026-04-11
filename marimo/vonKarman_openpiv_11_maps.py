@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -69,16 +69,9 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import windef
-
-    import numpy as np
-    import os
-    from time import time
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
     import matplotlib
+    from openpiv import windef
     matplotlib.rcParams['figure.figsize'] = (8.0, 6.0)
     return (windef,)
 
@@ -89,9 +82,9 @@ def _(windef):
 
     # 'Data related settings'
     # Folder with the images to process
-    settings.filepath_images = "test9/'
+    settings.filepath_images = "test9/"
     # Folder for the outputs
-    settings.save_path = "test9/results/'
+    settings.save_path = "test9/results/"
     # Root name of the output Folder for Result Files
     settings.save_folder_suffix = 'Test_1'
     # Format and Image Sequence
@@ -203,7 +196,7 @@ def _(windef):
 @app.cell
 def _():
     import glob
-    file_list = sorted(glob.glob(data/karman_16Hz_*.jpg"))
+    file_list = sorted(glob.glob("data/karman_16Hz_*.jpg"))
     file_list = file_list[-2:]
     file_list
     return
@@ -227,14 +220,14 @@ def _():
 @app.cell
 def _():
     # !pip install git+https://github.com/alexlib/pivpy
-    from pivpy import io, pivpy, graphics
+    from pivpy import io
 
     return (io,)
 
 
 @app.cell
 def _(io):
-    data = io.load_openpiv_txt(test9/results/OpenPIV_results_6_Test_1/field_A0000.txt")
+    data = io.load_openpiv_txt("data/test9/results/OpenPIV_results_6_Test_1/field_A0000.txt")
     data.piv.vorticity()
     data.piv.quiver()
     return

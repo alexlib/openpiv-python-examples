@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -34,9 +34,10 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, scaling, pyprocess, validation, filters
     import pathlib
+
     import numpy as np
+    from openpiv import filters, pyprocess, tools, validation
 
     return filters, np, pathlib, pyprocess, tools, validation
 
@@ -66,7 +67,7 @@ def _(filters, np, path, pyprocess, tools, validation):
 
         # process image pair with extended search area piv algorithm.
         u, v, sig2noise = pyprocess.extended_search_area_piv( frame_a, frame_b, \
-            window_size=64, overlap=32, dt=0.02, search_area_size=128, sig2noise_method='peak2peak")
+            window_size=64, overlap=32, dt=0.02, search_area_size=128, sig2noise_method="peak2peak")
         mask = validation.sig2noise_val( sig2noise, threshold = 1.5 )
         u, v = filters.replace_outliers( u, v, mask, method='localmean', max_iter=10, kernel_size=2)
         # get window centers coordinates
@@ -81,7 +82,7 @@ def _(filters, np, path, pyprocess, tools, validation):
 @app.cell
 def _(func, pathlib, tools):
     path = pathlib.Path("test2/")
-    task = tools.Multiprocesser( data_dir = path, pattern_a='2image_*0.tif', pattern_b='2image_*1.tif")
+    task = tools.Multiprocesser( data_dir = path, pattern_a="2image_*0.tif", pattern_b="2image_*1.tif")
     task.run( func = func, n_cpus=1 )
     return (path,)
 

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -40,23 +40,23 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
-    from scipy.fft import rfft2, irfft2, fftshift
 
     return np, plt
 
 
 @app.cell
 def _():
-    from openpiv.pyprocess import moving_window_array, \
-                                normalize_intensity,\
-                                find_subpixel_peak_position, \
-                                get_field_shape, \
-                                get_coordinates,\
-                                correlation_to_displacement,\
-                                fft_correlate_images
+    from openpiv.pyprocess import (
+        correlation_to_displacement,
+        fft_correlate_images,
+        get_coordinates,
+        get_field_shape,
+        moving_window_array,
+        normalize_intensity,
+    )
     from openpiv.tools import imread, transform_coordinates
 
     return (
@@ -73,8 +73,8 @@ def _():
 
 @app.cell
 def _(imread):
-    frame_a = imread("test1/exp1_001_a.bmp")
-    frame_b = imread("test1/exp1_001_b.bmp")
+    frame_a = imread("data/test1/exp1_001_a.bmp")
+    frame_b = imread("data/test1/exp1_001_b.bmp")
 
     # frame_a = frame_a[:128,:128]
     # frame_b = frame_b[:128,:128]
@@ -172,7 +172,7 @@ def _(
 
 @app.cell
 def _(aa_1, bb_1, fft_correlate_images):
-    c1 = fft_correlate_images(aa_1, bb_1, correlation_method='linear")
+    c1 = fft_correlate_images(aa_1, bb_1, correlation_method="linear")
     return (c1,)
 
 

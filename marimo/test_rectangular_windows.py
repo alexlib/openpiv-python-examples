@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -17,14 +17,12 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from openpiv import windef
-    from openpiv import tools, scaling, validation, filters, preprocess, pyprocess as process
-    import numpy as np
     import os
-    from time import time
-    import warnings
 
     import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import pyprocess as process
+    from openpiv import tools, windef
 
     return np, os, plt, process, tools, windef
 
@@ -36,14 +34,14 @@ def _(windef):
 
     'Data related settings'
     # Folder with the images to process
-    settings.filepath_images = "test15/'
+    settings.filepath_images = "test15/"
     # Folder for the outputs
-    settings.save_path = "test15/'
+    settings.save_path = "test15/"
     # Root name of the output Folder for Result Files
     settings.save_folder_suffix = 'Test_15'
     # Format and Image Sequence
-    settings.frame_pattern_a = "test15/synt00_a.pgm'
-    settings.frame_pattern_b = "test15/synt00_b.pgm'
+    settings.frame_pattern_a = "test15/synt00_a.pgm"
+    settings.frame_pattern_b = "test15/synt00_b.pgm"
 
     'Processing Parameters'
     settings.deformation_method = 'second image'
@@ -106,8 +104,8 @@ def _(np, os, plt, process, settings, tools):
     overlap = [8,72] # [50%, 75%] overlap
 
     u, v, sig2noise = process.extended_search_area_piv( frame_a, frame_b, \
-        window_size=window_size, overlap=overlap, dt=1, search_area_size=window_size, sig2noise_method='peak2peak")
-    print(f'Mean peak-to-peak ratio: {np.nanmean(sig2noise)}")
+        window_size=window_size, overlap=overlap, dt=1, search_area_size=window_size, sig2noise_method="peak2peak")
+    print(f"Mean peak-to-peak ratio: {np.nanmean(sig2noise)}")
 
     x, y = process.get_rect_coordinates(frame_a.shape, 
                                         window_size, 
@@ -118,7 +116,7 @@ def _(np, os, plt, process, settings, tools):
     #x, y, u, v = scaling.uniform(x, y, u, v, scaling_factor = 1)
     x, y, u, v = tools.transform_coordinates(x, y, u, v)
 
-    #tools.save(x, y, u, v, mask, 'test1.vec")
+    #tools.save(x, y, u, v, mask, "test1.vec")
     #tools.display_vector_field('test1.vec', scale=75, width=0.0035);
     plt.figure(figsize = (8,8))
     plt.quiver(x,y,u,v)

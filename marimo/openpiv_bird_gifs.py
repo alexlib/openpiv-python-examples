@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -18,8 +18,8 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from openpiv.piv import simple_piv
     import imageio
+    from openpiv.piv import simple_piv
 
     return imageio, simple_piv
 

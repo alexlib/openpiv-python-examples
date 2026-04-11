@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -24,24 +24,20 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import windef # <---- see windef.py for details
-    from openpiv import tools, scaling, validation, filters, preprocess
-    import openpiv.pyprocess as process
-    from openpiv import pyprocess
-    import numpy as np
-    import pathlib
-    import importlib_resources
-    from time import time
-    import warnings
-    import cv2 as cv
-    from scipy.ndimage import gaussian_filter, gaussian_filter1d
     import sys
+
+    import numpy as np
+    from openpiv import (
+        pyprocess,
+        tools,
+        windef,  # <---- see windef.py for details
+    )
+    from scipy.ndimage import gaussian_filter
     sys.path.append(r"D:\ESPCI\codes\multgridPIV")  # Add the folder containing the script to the Python path
     #import windef_modified  # Import the script as a module
+    import matplotlib.pyplot as plt
     import openpiv.filters
     from matplotlib.patches import Circle
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
     return Circle, gaussian_filter, np, openpiv, plt, pyprocess, tools, windef
 
@@ -49,13 +45,13 @@ def _():
 @app.cell
 def _(gaussian_filter, tools, windef):
     ### When I am reading from ND2. I comment this line for now since I am getting same error in v with ND2 as with png/tiff
-    ##im1 = ND2Reader('ten0.01_sam20230331_eco_sll2_1mm_FP_3um_0.03_t_2x_test001.nd2")
+    ##im1 = ND2Reader("ten0.01_sam20230331_eco_sll2_1mm_FP_3um_0.03_t_2x_test001.nd2")
     t1 = 23
     t2 = 24
     gauss_bg = 101
     gauss_ns = 1
     im1_t0 = tools.imread("../test20/t_23.png")#im1[t1]
-    im2_t0 = tools.imread(test20/t_24.png')#im1[t2]
+    im2_t0 = tools.imread("data/test20/t_24.png")#im1[t2]
     ## Correcting for background and noise
     im1_t0_fil = gaussian_filter(im1_t0/gaussian_filter(im1_t0, gauss_bg),gauss_ns)
     im2_t0_fil = gaussian_filter(im2_t0/gaussian_filter(im2_t0, gauss_bg),gauss_ns)
@@ -160,8 +156,8 @@ def _(Circle, im1_t0_fil, np, plt, u, v, x, y):
     _fig, _axs = plt.subplots(1, 1, figsize=(6, 6))
     _axs.imshow(im1_t0_fil)
     _fig.gca().invert_yaxis()
-    #axs[0].imshow(np.dstack((scalevalues(fil_im1,0,100),scalevalues(fil_im2,0,100), np.zeros(imgray1.shape)))[...,[0,1,0]], origin = 'lower")
-    _axs.quiver(x, y, u, v, color='white', scale=0.05, scale_units='xy")
+    #axs[0].imshow(np.dstack((scalevalues(fil_im1,0,100),scalevalues(fil_im2,0,100), np.zeros(imgray1.shape)))[...,[0,1,0]], origin = "lower")
+    _axs.quiver(x, y, u, v, color='white', scale=0.05, scale_units="xy")
     _a = x[np.where(u == u[1, 7])]  #Adjust this to your desired x-coordinate
     _b = y[np.where(u == u[1, 7])]  # Adjust this to your desired y-coordinate
     _radius = 20
@@ -204,7 +200,7 @@ def _(im1_t0_fil, im2_t0_fil, np, openpiv, pyprocess):
     ol = 16  # Overlap size
     sas = 64  # Search area size
     dt = 1
-    u_1, v_1, sig2noise = pyprocess.extended_search_area_piv(im1_t0_fil, im2_t0_fil, window_size=ws, overlap=ol, dt=dt, search_area_size=sas, sig2noise_method='peak2peak")
+    u_1, v_1, sig2noise = pyprocess.extended_search_area_piv(im1_t0_fil, im2_t0_fil, window_size=ws, overlap=ol, dt=dt, search_area_size=sas, sig2noise_method="peak2peak")
     u_f, v_f = openpiv.filters.replace_outliers(u_1, v_1, flags=np.zeros((u_1.shape[0], u_1.shape[1])).astype('int16'), method='localmean', kernel_size=1)
     # Replace outliers in velocity fields
     # Get coordinates for plotting
@@ -229,7 +225,7 @@ def _(Circle, im1_t0_fil, np, plt, u_1, u_f, v_f, x_1, y_1):
     _fig, _axs = plt.subplots(1, 1, figsize=(8, 8))
     _axs.imshow(im1_t0_fil)
     _fig.gca().invert_yaxis()
-    _axs.quiver(x_1, y_1, u_f, v_f, color='white', scale=0.05, scale_units='xy")
+    _axs.quiver(x_1, y_1, u_f, v_f, color='white', scale=0.05, scale_units="xy")
     _a = x_1[np.where(u_1 == u_1[1, 7])]
     _b = y_1[np.where(u_1 == u_1[1, 7])]
     _radius = 20
@@ -262,7 +258,7 @@ def _(Circle, im1_t0_fil, np, plt, u_2, v_2, x_2, y_2):
     _fig, _axs = plt.subplots(1, 1, figsize=(8, 8))
     _axs.imshow(im1_t0_fil)
     _fig.gca().invert_yaxis()
-    _axs.quiver(x_2, y_2, u_2, v_2, color='white', scale=0.05, scale_units='xy")
+    _axs.quiver(x_2, y_2, u_2, v_2, color='white', scale=0.05, scale_units="xy")
     _a = x_2[np.where(u_2 == u_2[1, 7])]
     _b = y_2[np.where(u_2 == u_2[1, 7])]
     _radius = 20

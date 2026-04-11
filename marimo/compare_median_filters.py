@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -42,9 +42,9 @@ def _(mo):
 @app.cell
 def _():
     import cv2  # conda install opencv; alternatively use imread() from openpiv tools
-    import numpy as np
     import matplotlib.pyplot as plt
-    from openpiv import tools, pyprocess, preprocess, validation, filters, scaling
+    import numpy as np
+    from openpiv import filters, preprocess, pyprocess, scaling, tools, validation
 
     return (
         cv2,

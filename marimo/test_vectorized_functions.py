@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -34,13 +34,15 @@ def _(mo):
 
 @app.cell
 def _():
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from openpiv.pyprocess import find_first_peak,\
-        vectorized_correlation_to_displacements
-    from openpiv.tools import imread
-    from numpy import log
     from glob import glob
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv.pyprocess import (
+        find_first_peak,
+        vectorized_correlation_to_displacements,
+    )
+    from openpiv.tools import imread
 
     return (
         find_first_peak,
@@ -283,8 +285,8 @@ def _():
 
 @app.cell
 def _(imread, np, pylab):
-    frame_a = imread("test11/A001_1.tif")
-    frame_b = imread("test11/A001_2.tif")
+    frame_a = imread("data/test11/A001_1.tif")
+    frame_b = imread("data/test11/A001_2.tif")
     pylab.imshow(np.c_[frame_a,np.ones((frame_a.shape[0],20)),frame_b],
                  cmap=pylab.cm.gray)
     return frame_a, frame_b
@@ -294,7 +296,13 @@ def _(imread, np, pylab):
 def _(frame_a, frame_b):
     _window_size = 32
     _overlap = 16
-    from openpiv.pyprocess import moving_window_array, get_field_shape, get_coordinates, fft_correlate_images, correlation_to_displacement
+    from openpiv.pyprocess import (
+        correlation_to_displacement,
+        fft_correlate_images,
+        get_coordinates,
+        get_field_shape,
+        moving_window_array,
+    )
     n_rows, n_cols = get_field_shape(frame_a.shape, _window_size, _overlap)
     x, y = get_coordinates(frame_a.shape, _window_size, _overlap)
     _aa = moving_window_array(frame_a, _window_size, _overlap)
@@ -313,7 +321,7 @@ def _(frame_a, frame_b):
 
 @app.cell
 def _(corr_6):
-    from openpiv.pyprocess import find_all_first_peaks, find_all_second_peaks, find_second_peak
+    from openpiv.pyprocess import find_all_second_peaks, find_second_peak
     peaks_v = find_all_second_peaks(corr_6)[0]
     peaks_o = []
     for _i in range(len(corr_6)):
@@ -328,20 +336,20 @@ def _(corr_6):
 
 @app.cell
 def _(corr_6, correlation_to_displacement, n_cols, n_rows):
-    u_o, _v_o = correlation_to_displacement(corr_6, n_rows, n_cols, subpixel_method='gaussian")
+    u_o, _v_o = correlation_to_displacement(corr_6, n_rows, n_cols, subpixel_method="gaussian")
     return (u_o,)
 
 
 @app.cell
 def _(corr_6, n_cols, n_rows, vectorized_correlation_to_displacements):
-    u_v, _v_v = vectorized_correlation_to_displacements(corr_6, n_rows, n_cols, subpixel_method='gaussian")
+    u_v, _v_v = vectorized_correlation_to_displacements(corr_6, n_rows, n_cols, subpixel_method="gaussian")
     return (u_v,)
 
 
 @app.cell
 def _(np, u_o, u_v):
     # slight descrepancies possibly caused by setting eps to 1e-10
-    print('[u original, u vectorized]")
+    print("[u original, u vectorized]")
     print(np.stack((u_o[0, 0:12], u_v[0, 0:12])).T)
     print((np.nanmean(u_o), np.nanmean(u_v)))
     return
@@ -357,8 +365,7 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv.pyprocess import vectorized_sig2noise_ratio,\
-        sig2noise_ratio
+    from openpiv.pyprocess import sig2noise_ratio, vectorized_sig2noise_ratio
 
     return sig2noise_ratio, vectorized_sig2noise_ratio
 
@@ -367,7 +374,7 @@ def _():
 def _(corr_6, sig2noise_ratio):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    peak2peak_o = sig2noise_ratio(corr_6, 'peak2peak")
+    peak2peak_o = sig2noise_ratio(corr_6, "peak2peak")
     return (peak2peak_o,)
 
 
@@ -375,7 +382,7 @@ def _(corr_6, sig2noise_ratio):
 def _(corr_6, vectorized_sig2noise_ratio):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    peak2peak_v = vectorized_sig2noise_ratio(corr_6, 'peak2peak")
+    peak2peak_v = vectorized_sig2noise_ratio(corr_6, "peak2peak")
     return (peak2peak_v,)
 
 
@@ -383,7 +390,7 @@ def _(corr_6, vectorized_sig2noise_ratio):
 def _(corr_6, sig2noise_ratio):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    peak2mean_o = sig2noise_ratio(corr_6, 'peak2mean")
+    peak2mean_o = sig2noise_ratio(corr_6, "peak2mean")
     return (peak2mean_o,)
 
 
@@ -391,13 +398,13 @@ def _(corr_6, sig2noise_ratio):
 def _(corr_6, vectorized_sig2noise_ratio):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    peak2mean_v = vectorized_sig2noise_ratio(corr_6, 'peak2mean")
+    peak2mean_v = vectorized_sig2noise_ratio(corr_6, "peak2mean")
     return (peak2mean_v,)
 
 
 @app.cell
 def _(np, peak2peak_o, peak2peak_v):
-    print('[original, vectorized]")
+    print("[original, vectorized]")
     print(np.stack((peak2peak_o[0:10], peak2peak_v[0:10])).T)
     print((peak2peak_o.mean(), peak2peak_v.mean()))
     return
@@ -405,7 +412,7 @@ def _(np, peak2peak_o, peak2peak_v):
 
 @app.cell
 def _(np, peak2mean_o, peak2mean_v):
-    print('[original, vectorized]")
+    print("[original, vectorized]")
     print(np.stack((peak2mean_o[0:10], peak2mean_v[0:10])).T)
     print((peak2mean_o.mean(), peak2mean_v.mean()))
     return
@@ -452,8 +459,8 @@ def _(
         _aa = moving_window_array(frame_a_1, _window_size, _overlap)
         _bb = moving_window_array(frame_b_1, _window_size, _overlap)
         corr_7 = fft_correlate_images(_aa, _bb, 'circular', False)
-        u_o_1, _v_o = correlation_to_displacement(corr_7, n_rows_1, n_cols_1, 'gaussian")
-        u_v_1, _v_v = vectorized_correlation_to_displacements(corr_7, n_rows_1, n_cols_1, 'gaussian")
+        u_o_1, _v_o = correlation_to_displacement(corr_7, n_rows_1, n_cols_1, "gaussian")
+        u_v_1, _v_v = vectorized_correlation_to_displacements(corr_7, n_rows_1, n_cols_1, "gaussian")
         u_o_1 = u_o_1[2:-2, 2:-2]
         u_v_1 = u_v_1[2:-2, 2:-2]
         _v_o = _v_o[2:-2, 2:-2]
@@ -467,8 +474,8 @@ def _(
 @app.cell
 def _(bias_error_original, bias_error_vectorized, n, np, plt):
     fig, ax = plt.subplots()
-    ax.set_ylabel('Bias error [px]")
-    ax.set_xlabel('Real u and v displacements [px]")
+    ax.set_ylabel("Bias error [px]")
+    ax.set_xlabel("Real u and v displacements [px]")
     ax.plot(np.mgrid[3:4+n:n], bias_error_original)
     ax.plot(np.mgrid[3:4+n:n], bias_error_vectorized)
     ax.legend(

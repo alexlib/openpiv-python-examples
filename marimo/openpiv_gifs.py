@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -18,10 +18,8 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from openpiv.piv import simple_piv
     import imageio
-    import matplotlib.pyplot as plt
-    import numpy as np
+    from openpiv.piv import simple_piv
 
     return imageio, simple_piv
 
@@ -34,9 +32,9 @@ def _(imageio, simple_piv):
     base_ext = '.gif'
 
     for gif in list_of_gifs: 
-        print('Reading ..")
-        print(f'{base_path}{base_name}{gif}{base_ext}")
-        im = imageio.get_reader(f'{base_path}{base_name}{gif}{base_ext}")
+        print("Reading ..")
+        print(f"{base_path}{base_name}{gif}{base_ext}")
+        im = imageio.get_reader(f"{base_path}{base_name}{gif}{base_ext}")
         # print(im)
 
         images = []

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -17,10 +17,9 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, scaling, filters, validation, preprocess
-    import numpy as np
-    from skimage import io
     import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, preprocess, pyprocess, scaling, tools, validation
 
     # '%matplotlib inline' command supported automatically in marimo
     return filters, np, plt, preprocess, pyprocess, scaling, tools, validation

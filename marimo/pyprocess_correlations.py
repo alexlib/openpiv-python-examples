@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -35,17 +35,17 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, scaling, pyprocess, validation, filters
     import numpy as np
     import pylab
+    from openpiv import filters, pyprocess, scaling, tools, validation
     # '%matplotlib inline' command supported automatically in marimo
     return filters, np, pylab, pyprocess, scaling, tools, validation
 
 
 @app.cell
 def _(np, pylab, tools):
-    frame_a  = tools.imread( test1/exp1_001_a.bmp")
-    frame_b  = tools.imread( test1/exp1_001_b.bmp")
+    frame_a  = tools.imread("data/test1/exp1_001_a.bmp")
+    frame_b  = tools.imread("data/test1/exp1_001_b.bmp")
 
     pylab.imshow(np.c_[frame_a,np.ones((frame_a.shape[0],20)),frame_b],
                  cmap=pylab.cm.gray)
@@ -82,7 +82,7 @@ def _(
 ):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(frame_a, frame_b, window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size, sig2noise_method='peak2peak")
+    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(frame_a, frame_b, window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size, sig2noise_method="peak2peak")
     # default correlation is FFT circular type (faster, less robust)
     # default type of correlation is not normalized, faster
     # we do not know the values of signal to noise ratio a priori
@@ -157,7 +157,7 @@ def _(
 ):
     # magic command not supported in marimo; please file an issue to add support
     # %%time
-    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(pyprocess.normalize_intensity(frame_a), pyprocess.normalize_intensity(frame_b), window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size, sig2noise_method='peak2peak', correlation_method='linear")
+    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(pyprocess.normalize_intensity(frame_a), pyprocess.normalize_intensity(frame_b), window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size, sig2noise_method='peak2peak', correlation_method="linear")
     # change to another type of correlation 'linear' - uses
     # zero padding prior to the correlation
     # it requires uniform background and therefore 
@@ -250,7 +250,7 @@ def _(
     validation,
     window_size,
 ):
-    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(frame_a, frame_b, window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size_1, sig2noise_method='peak2peak")
+    _u, _v, _sig2noise = pyprocess.extended_search_area_piv(frame_a, frame_b, window_size=window_size, overlap=overlap, dt=dt, search_area_size=search_area_size_1, sig2noise_method="peak2peak")
     _x, _y = pyprocess.get_coordinates(frame_a.shape, search_area_size=search_area_size_1, overlap=overlap)
     _mask = validation.sig2noise_val(_sig2noise, threshold=np.percentile(_sig2noise, 5))
     _u, _v = filters.replace_outliers(_u, _v, _mask, method='localmean', max_iter=10, kernel_size=2)
@@ -265,9 +265,9 @@ def _(tools):
     tools.display_vector_field('linear_normalized_extended.txt', scale=30)
     tools.display_vector_field('linear_normalized.txt', scale=30)
     tools.display_vector_field('linear_intensity.txt', scale=30)
-    tools.display_vector_field('circular_default.txt', scale=30);
-    tools.display_vector_field('circular_normalized.txt', scale=30);
-    tools.display_vector_field('circular_extended.txt', scale=30);
+    tools.display_vector_field('circular_default.txt', scale=30)
+    tools.display_vector_field('circular_normalized.txt', scale=30)
+    tools.display_vector_field('circular_extended.txt', scale=30)
     return
 
 

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -40,7 +40,7 @@ def _(mo):
     ```
         elif correlation_method == 'direct':
             return convolve2d(normalize_intensity(window_a),
-                              normalize_intensity(window_b[::-1, ::-1, ::-1]), 'full")
+                              normalize_intensity(window_b[::-1, ::-1, ::-1]), "full")
         else:
             raise ValueError("method is not implemented")
     ```
@@ -69,11 +69,10 @@ def _(mo):
 
 @app.cell
 def _():
-    import pathlib
-    import cv2 # conda install opencv; alternatively use imread() from openpiv tools
-    import numpy as np
+    import cv2  # conda install opencv; alternatively use imread() from openpiv tools
     import matplotlib.pyplot as plt
-    from openpiv import tools, pyprocess, preprocess, validation, filters, scaling
+    import numpy as np
+    from openpiv import filters, preprocess, pyprocess, scaling, tools, validation
 
     return (
         cv2,
@@ -182,8 +181,8 @@ def _(
 
         # Having found displacements in pix, we can find corresponding velocities in
         # pix/time
-        u = "xDisp/deltaT # pix/s
-        v = "yDisp/deltaT # pix/s
+        u = xDisp/deltaT # pix/s
+        v = yDisp/deltaT # pix/s
 
         x, y = pyprocess.get_coordinates(imageShape,
                                          search_area_size = searchAreaSize,
@@ -201,7 +200,7 @@ def _(
         # be done next.
 
         # Do the validation of the correlation peaks.
-        corrs = corrs.astype('float64")
+        corrs = corrs.astype("float64")
         s2n = pyprocess.sig2noise_ratio(corrs, "peak2mean")
         invalid_mask_s2n = validation.sig2noise_val(s2n, threshold = s2nThresh)
 
@@ -484,10 +483,10 @@ def _(np, plt):
     f = np.sin(2 * np.pi * t)
     # Create example signals
     g = np.sin(2 * np.pi * t + np.pi / 4)  # Number of samples
-    linear_corr = correlate(f, g, mode='full")
+    linear_corr = correlate(f, g, mode="full")
     padding_length = N  # Sine wave
     f_padded = np.pad(f, (0, padding_length), 'constant')  # Phase-shifted sine wave
-    g_padded = np.pad(g, (0, padding_length), 'constant")
+    g_padded = np.pad(g, (0, padding_length), "constant")
     # Compute cross-correlation without zero-padding the "old-school way".
     # The function correlate() below doesn't use fft to calculate correlations. It was the
     # original function used in OpenPIV. It was deemed slow and was abandoned and replaced with
@@ -507,17 +506,17 @@ def _(np, plt):
     # complications.
     plt.subplot(2, 1, 1)
     plt.plot(lags_linear, linear_corr)
-    plt.title('Cross-correlation without zero-padding")
-    plt.xlabel('Lag")
+    plt.title("Cross-correlation without zero-padding")
+    plt.xlabel("Lag")
     # Generate lag arrays
-    plt.ylabel('Correlation")
+    plt.ylabel("Correlation")
     plt.grid()
     plt.subplot(2, 1, 2)
     # Plot the results
     plt.plot(lags_circular, circular_corr)
-    plt.title('FFT-based cross-correlation with zero-padding (i.e., linear cross-correlation)")
-    plt.xlabel('Lag")
-    plt.ylabel('Correlation")
+    plt.title("FFT-based cross-correlation with zero-padding (i.e., linear cross-correlation)")
+    plt.xlabel("Lag")
+    plt.ylabel("Correlation")
     plt.grid()
     plt.tight_layout()
     plt.show()

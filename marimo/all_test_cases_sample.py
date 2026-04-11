@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -40,10 +40,11 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, scaling, validation, filters
-    import numpy as np
     import glob
+
     import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, pyprocess, scaling, tools, validation
     # '%matplotlib inline' command supported automatically in marimo
     return filters, glob, np, plt, pyprocess, scaling, tools, validation
 
@@ -113,7 +114,7 @@ def _(filters, list_of_images, np, plt, pyprocess, scaling, tools, validation):
     
         tools.save(list_of_images[0]+'.txt', x, y, u, v) 
         fig,ax = plt.subplots(figsize=(8,8))
-        ax.set_title(im1+'.txt")
+        ax.set_title(im1+".txt")
         tools.display_vector_field(im1+'.txt', 
                                             on_img=True,image_name=list_of_images[0],
                                             scaling_factor=1.,
@@ -128,12 +129,12 @@ def _(filters, list_of_images, np, plt, pyprocess, scaling, tools, validation):
 @app.cell
 def _(glob, openpiv_default_run, overlap, search_size, window_size):
     alist_filter = ['jpg', 'bmp', 'png', 'tif', 'tiff']
-    list_of_tests = glob.glob(test*")
+    list_of_tests = glob.glob("data/test*")
     list_of_tests.sort()
     # all test cases in /openpiv/examples/
     list_of_images = []
     for _test in list_of_tests:
-        _list_of_files = glob.glob(_test + '/*.*")
+        _list_of_files = glob.glob(_test + "/*.*")
         _list_of_files.sort()
         list_of_images = [f for f in _list_of_files if f[-3:] in alist_filter]
         if len(list_of_images) > 1:
@@ -170,7 +171,7 @@ def _(
 ):
     list_of_images_1 = []
     for _test in list_of_tests:
-        _list_of_files = glob.glob(_test + '/*.*")
+        _list_of_files = glob.glob(_test + "/*.*")
         _list_of_files.sort()
         list_of_images_1 = [f for f in _list_of_files if f[-3:] in alist_filter]
         if len(list_of_images_1) > 1:

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -17,20 +17,21 @@ app = marimo.App()
 
 @app.cell
 def _():
-    from pytube import YouTube
 
 
 
     # misc
+    import datetime
+    import math
     import os
     import shutil
-    import math
-    import datetime
-    # plots
-    import matplotlib.pyplot as plt
+
     # '%matplotlib inline' command supported automatically in marimo
     # image operation
     import cv2
+
+    # plots
+    import matplotlib.pyplot as plt
 
     return cv2, datetime, math, os, plt, shutil
 
@@ -39,7 +40,7 @@ def _():
 def _():
     # from pytube import YouTube
     # YouTube('https://youtu.be/2lAe1cqCOXo').streams.first().download()
-    # yt = YouTube('http://youtube.com/watch?v=2lAe1cqCOXo")
+    # yt = YouTube("http://youtube.com/watch?v=2lAe1cqCOXo")
     # yt.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first().download()
     return
 
@@ -82,11 +83,11 @@ def _(cv2, datetime, math, os):
         
         def get_video_duration(self):
             duration = self.n_frames / self.fps
-            print(f'Duration: {datetime.timedelta(seconds=duration)}")
+            print(f"Duration: {datetime.timedelta(seconds=duration)}")
         
         def get_n_images(self, every_x_frame):
             n_images = math.floor(self.n_frames / every_x_frame) + 1
-            print(f'Extracting every {every_x_frame} frame would result in {n_images} images.")
+            print(f"Extracting every {every_x_frame} frame would result in {n_images} images.")
         
         def extract_frames(self, every_x_frame, img_name, dest_path=None, img_ext='.jpg'):
             if not self.vid_cap.isOpened():
@@ -99,7 +100,7 @@ def _(cv2, datetime, math, os):
             else:
                 if not os.path.isdir(dest_path):
                     os.makedirs(dest_path, exist_ok=True)
-                    print(f'Created the following directory: {dest_path}")
+                    print(f"Created the following directory: {dest_path}")
         
             frame_cnt = 0
             img_cnt = 0
@@ -122,7 +123,7 @@ def _(cv2, datetime, math, os):
 
 @app.cell
 def _(FrameExtractor):
-    fe = FrameExtractor(video_path='Super-Large-Scale Flow Visualization with Snow.mp4")
+    fe = FrameExtractor(video_path="Super-Large-Scale Flow Visualization with Snow.mp4")
     return (fe,)
 
 
@@ -136,14 +137,15 @@ def _(fe):
 def _(fe):
     fe.extract_frames(every_x_frame=4, 
                       img_name='test', 
-                      dest_path='test_images")
+                      dest_path="test_images")
     return
 
 
 @app.cell
 def _():
-    import glob, re
-    image_list = glob.glob('./test_images/test_*.jpg")
+    import glob
+    import re
+    image_list = glob.glob("./test_images/test_*.jpg")
     image_list.sort(key=lambda x: float(re.findall('(\\d+)', x)[0]))
     print(image_list)
     return (image_list,)
@@ -169,16 +171,16 @@ def _(image_list, imageio, simple_piv):
         a = rgb2gray(imageio.imread(image_list[i]))
         b = rgb2gray(imageio.imread(image_list[i+1]))
         # plt.figure()
-        # plt.imshow(np.sum(a,axis=2),cmap='gray")
+        # plt.imshow(np.sum(a,axis=2),cmap="gray")
         # plt.figure()
-        # plt.imshow(np.sum(b,axis=2),cmap='gray")
+        # plt.imshow(np.sum(b,axis=2),cmap="gray")
         simple_piv(a, b)
     return
 
 
 @app.cell
 def _(shutil):
-    shutil.rmtree('./test_images")
+    shutil.rmtree("./test_images")
     return
 
 

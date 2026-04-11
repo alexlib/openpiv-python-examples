@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -26,20 +26,17 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
-    from scipy.fft import rfft2, irfft2, fftshift
-    from numpy import log
     import matplotlib.pyplot as plt
-    from openpiv.tools import imread
     from openpiv.pyprocess import extended_search_area_piv, normalize_intensity
+    from openpiv.tools import imread
 
     return extended_search_area_piv, imread, normalize_intensity, plt
 
 
 @app.cell
 def _(imread):
-    frame_a = imread(test1/exp1_001_a.bmp")
-    frame_b = imread(test1/exp1_001_b.bmp")
+    frame_a = imread("data/test1/exp1_001_a.bmp")
+    frame_b = imread("data/test1/exp1_001_b.bmp")
     return frame_a, frame_b
 
 

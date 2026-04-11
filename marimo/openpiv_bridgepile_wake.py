@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -36,21 +36,18 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, validation, filters, scaling 
-
-    import numpy as np
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
-    import imageio
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, pyprocess, tools, validation
 
     return filters, np, plt, pyprocess, tools, validation
 
 
 @app.cell
 def _(tools):
-    frame_a  = tools.imread(test8/frame0001.tif")
-    frame_b  = tools.imread(test8/frame0002.tif")
+    frame_a  = tools.imread("data/test8/frame0001.tif")
+    frame_b  = tools.imread("data/test8/frame0002.tif")
     return frame_a, frame_b
 
 
@@ -127,13 +124,13 @@ def _():
 def _(plt, tools):
     # If you need a larger view:
     _fig, _ax = plt.subplots(figsize=(12, 12))
-    tools.display_vector_field('exp1_001.txt', ax=_ax, scaling_factor=1.0, scale=1000, width=0.0045, on_img=True, image_name=test8/frame0001.tif")
+    tools.display_vector_field('exp1_001.txt', ax=_ax, scaling_factor=1.0, scale=1000, width=0.0045, on_img=True, image_name="data/test8/frame0001.tif")
     return
 
 
 @app.cell
 def _():
-    from openpiv.windef import PIVSettings, Multiprocesser, piv
+    from openpiv.windef import PIVSettings, piv
 
     return PIVSettings, piv
 
@@ -141,7 +138,7 @@ def _():
 @app.cell
 def _(PIVSettings, piv):
     settings = PIVSettings()
-    settings.filepath_images = test8'
+    settings.filepath_images = "data/test8"
     settings.frame_pattern_a = 'frame00*.tif'
     settings.frame_pattern_b = '(1+2),(2+3)'
     settings.show_plot=True

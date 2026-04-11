@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -92,7 +92,7 @@ def _(cv2):
     # https://www.youtube.com/watch?v=EeS1rYMZUxI&ab_channel=USUExperimentalFluidDynamicsLab
     # all the rights reserved to the authors
 
-    vidcap = cv2.VideoCapture(test_movie/videoplayback.mp4")
+    vidcap = cv2.VideoCapture("data/test_movie/videoplayback.mp4")
     success, image1 = vidcap.read()
     skip = 3
     for i in range(skip):
@@ -147,7 +147,7 @@ def _(
                                                            overlap=overlap, 
                                                            dt=dt, 
                                                            search_area_size=searchsize, 
-                                                           sig2noise_method='peak2peak")
+                                                           sig2noise_method="peak2peak")
 
     x, y = pyprocess.get_coordinates( image_size=frame_a.shape, 
                                      search_area_size=searchsize, 
@@ -175,16 +175,16 @@ def _(
     # 0,0 shall be bottom left, positive rotation rate is counterclockwise
     x, y, u3, v3 = tools.transform_coordinates(x, y, u3, v3)
 
-    tools.save(test16/night_lava_test.txt' , x, y, u3, v3, mask )
+    tools.save("data/test16/night_lava_test.txt" , x, y, u3, v3, mask )
 
-    tools.imsave(test16/bkg.png',as_grey(image1))
+    tools.imsave("data/test16/bkg.png",as_grey(image1))
     return x, y
 
 
 @app.cell
 def _(plt, tools):
     _fig, _ax = plt.subplots()
-    tools.display_vector_field(test16/night_lava_test.txt', ax=_ax, scaling_factor=1, scale=1000, width=0.0035, on_img=True, image_name=test16/bkg.png")  # scale defines here the arrow length  # width is the thickness of the arrow  # overlay on the image
+    tools.display_vector_field("data/test16/night_lava_test.txt", ax=_ax, scaling_factor=1, scale=1000, width=0.0035, on_img=True, image_name=data/test16/bkg.png")  # scale defines here the arrow length  # width is the thickness of the arrow  # overlay on the image
     return
 
 
@@ -213,8 +213,8 @@ def _(frame_a, frame_b, np, plt):
     v, u = optical_flow_ilk(frame_a, frame_b, radius=15)
     norm = np.sqrt(u ** 2 + v ** 2)
     _fig, (ax0, ax1) = plt.subplots(1, 2, figsize=(8, 4))
-    ax0.imshow(frame_a, cmap='gray")
-    ax0.set_title('Sequence image sample")
+    ax0.imshow(frame_a, cmap="gray")
+    ax0.set_title("Sequence image sample")
     ax0.set_axis_off()
     nvec = 20
     nl, nc = frame_a.shape
@@ -224,7 +224,7 @@ def _(frame_a, frame_b, np, plt):
     v_ = v[::step, ::step]
     ax1.imshow(norm)
     ax1.quiver(x_1, y_1, u_, v_, color='r', units='dots', angles='xy', scale_units='xy', lw=3)
-    ax1.set_title('Optical flow magnitude and vector field")
+    ax1.set_title("Optical flow magnitude and vector field")
     ax1.set_axis_off()
     _fig.tight_layout()
     plt.show()

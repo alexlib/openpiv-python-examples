@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -39,24 +39,17 @@ def _(mo):
 @app.cell
 def _():
     from IPython.display import Image
-    Image(test18/active-nematics.gif")
+    Image("data/test18/active-nematics.gif")
     return
 
 
 @app.cell
 def _():
-    from openpiv import windef
-
-    
-    from openpiv import tools, scaling, validation, filters, preprocess
-    import numpy as np
     import pathlib
 
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
     import matplotlib
+    from openpiv import windef
     matplotlib.rcParams['figure.figsize'] = (6.0, 6.0)
     return pathlib, windef
 

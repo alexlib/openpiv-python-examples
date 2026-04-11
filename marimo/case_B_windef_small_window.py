@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -36,21 +36,11 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import windef
-
-    
-    from openpiv import tools, scaling, validation, filters, preprocess
-    import openpiv.pyprocess as process
-    from openpiv import pyprocess
-    import numpy as np
     import pathlib
-    import warnings
 
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
     import matplotlib
+    from openpiv import windef
     matplotlib.rcParams['figure.figsize'] = (8.0, 8.0)
     return pathlib, windef
 
@@ -227,9 +217,9 @@ def _():
 
 @app.cell
 def _(settings, simple_piv):
-    files = sorted(settings.filepath_images.glob('*.tif"))
+    files = sorted(settings.filepath_images.glob("*.tif"))
     from openpiv.tools import imread
-    simple_piv(imread(files[0]), imread(files[1]));
+    simple_piv(imread(files[0]), imread(files[1]))
     return
 
 

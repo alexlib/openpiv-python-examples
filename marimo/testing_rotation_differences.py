@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -26,16 +26,9 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import windef
-
-    import numpy as np
-    import os
-    from time import time
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
     import matplotlib
+    from openpiv import windef
     matplotlib.rcParams['figure.figsize'] = (8.0, 8.0)
     return (windef,)
 
@@ -46,16 +39,16 @@ def _(windef):
 
     # 'Data related settings'
     # Folder with the images to process
-    # settings.filepath_images = "data/'
+    # settings.filepath_images = "data/"
     # Folder for the outputs
-    settings.save_path = "OpenPIV_results/'
+    settings.save_path = "OpenPIV_results/"
     # Root name of the output Folder for Result Files
     settings.save_folder_suffix = 'Test_1'
     # Format and Image Sequence
     # settings.frame_pattern_a = 'karman_16Hz_000_A.jpg'
     # settings.frame_pattern_b = 'karman_16Hz_000_B.jpg'
 
-    settings.filepath_images = "test10/'
+    settings.filepath_images = "test10/"
     settings.frame_pattern_a = 'B001_1.tif'
     settings.frame_pattern_b = 'B001_2.tif'
 

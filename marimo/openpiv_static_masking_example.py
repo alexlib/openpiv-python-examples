@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -43,19 +43,19 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import tools
-    from openpiv.piv import simple_piv
-
     import pathlib
+
     import matplotlib.pyplot as plt
     import numpy as np
+    from openpiv import tools
+    from openpiv.piv import simple_piv
 
     return np, pathlib, plt, simple_piv, tools
 
 
 @app.cell
 def _(pathlib):
-    images = sorted(pathlib.Path("test9').glob('*.jpg'))
+    images = sorted(pathlib.Path("test9").glob('*.jpg'))
     print(images)
     return (images,)
 
@@ -77,7 +77,7 @@ def _(mo):
 
 @app.cell
 def _(a, b, simple_piv):
-    simple_piv(a,b);
+    simple_piv(a,b)
     return
 
 
@@ -120,7 +120,7 @@ def _(a, b, mask, np, plt):
 
 @app.cell
 def _(masked_a, masked_b, simple_piv):
-    simple_piv(masked_a, masked_b);
+    simple_piv(masked_a, masked_b)
     return
 
 
@@ -145,7 +145,7 @@ def _(mo):
 def _(images, mask, pathlib):
     from openpiv import windef
     settings = windef.PIVSettings()
-    settings.filepath_images = pathlib.Path('.")
+    settings.filepath_images = pathlib.Path(".")
     settings.frame_pattern_a = str(images[0])
     settings.frame_pattern_b = str(images[1])
 

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -55,22 +55,14 @@ def _():
 
 @app.cell
 def _():
-    from openpiv import windef
-    from openpiv import tools, scaling, validation, filters, preprocess
-    from openpiv.pyprocess import extended_search_area_piv, get_field_shape, get_coordinates
-    from openpiv import smoothn
-    from openpiv.preprocess import mask_coordinates
-
-    import numpy as np
     import os
-    from time import time
-    import warnings
 
-
-    import matplotlib.pyplot as plt
     # '%matplotlib inline' command supported automatically in marimo
-
     import matplotlib
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, preprocess, scaling, smoothn, tools, validation, windef
+    from openpiv.preprocess import mask_coordinates
     matplotlib.rcParams['figure.figsize'] = (10.0, 8.0)
     return (
         filters,
@@ -93,7 +85,7 @@ def _(windef):
 
     # 'Data related settings'
     # Folder with the images to process
-    settings.filepath_images = "test9/'
+    settings.filepath_images = "test9/"
     # Folder for the outputs
     settings.save_path = '.'
     # Root name of the output Folder for Result Files
@@ -311,7 +303,7 @@ def _(frame_a_1, frame_b_1, np, settings, windef):
     v0 = v.copy()
 
     def status_message(u):
-        print(f'{np.isnan(u).sum() / u.size * 100:.2f}% invalid vectors out of {u.size} vectors")
+        print(f"{np.isnan(u).sum() / u.size * 100:.2f}% invalid vectors out of {u.size} vectors")
     # store for the comparison of the following steps
     status_message(u)
     return sig2noise_ratio, status_message, u, u0, v, v0, x, y
@@ -327,7 +319,7 @@ def _(image_mask, mask_coords, np, plt, x, y):
     xymask = points_in_poly(np.c_[y.flatten(),x.flatten()],mask_coords)
 
     plt.imshow(~image_mask,cmap=plt.cm.gray)
-    plt.plot(x.flat[xymask],y.flat[xymask],'x")
+    plt.plot(x.flat[xymask],y.flat[xymask],"x")
     return (xymask,)
 
 
@@ -346,11 +338,11 @@ def _(plt, sig2noise_ratio, u_1, v_1, x, xymask, y):
     # we need to remove those values for the display
     def quick_quiver():
         """ u,v expected to have a mask """
-        plt.quiver(x, y, u_1, -v_1, sig2noise_ratio, scale=50, color='b")
+        plt.quiver(x, y, u_1, -v_1, sig2noise_ratio, scale=50, color="b")
         plt.gca().invert_yaxis()
         plt.gca().set_aspect(1)
-        plt.plot(x.flat[xymask], y.flat[xymask], 'rx")
-        plt.colorbar(orientation='horizontal")
+        plt.plot(x.flat[xymask], y.flat[xymask], "rx")
+        plt.colorbar(orientation="horizontal")
 
     return (quick_quiver,)
 
@@ -367,7 +359,7 @@ def _(plt, sig2noise_ratio):
     tmp_1 = sig2noise_ratio.copy()
     tmp_1[tmp_1 > 10] = 10  # there are some extra high values 1e7 ...
     plt.imshow(tmp_1)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return (tmp_1,)
 
 
@@ -398,10 +390,10 @@ def _(settings, sig2noise_ratio, status_message, u_1, validation):
 def _(mask_s2n, plt, sig2noise_ratio, u0, u_1, v0, v_1, x, y):
     plt.figure()
     plt.quiver(x, y, u_1, -v_1, sig2noise_ratio)
-    plt.quiver(x[mask_s2n], y[mask_s2n], u0[mask_s2n], -v0[mask_s2n], color='r")
+    plt.quiver(x[mask_s2n], y[mask_s2n], u0[mask_s2n], -v0[mask_s2n], color="r")
     plt.gca().invert_yaxis()
     plt.gca().set_aspect(1.0)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return
 
 
@@ -433,10 +425,10 @@ def _(settings, status_message, u_1, v_1, validation):
 def _(mask_g, plt, sig2noise_ratio, u0, u_1, v0, v_1, x, y):
     plt.figure()
     plt.quiver(x, y, u_1, -v_1, sig2noise_ratio)
-    plt.quiver(x[mask_g], y[mask_g], u0[mask_g], -v0[mask_g], color='r")
+    plt.quiver(x[mask_g], y[mask_g], u0[mask_g], -v0[mask_g], color="r")
     plt.gca().invert_yaxis()
     plt.gca().set_aspect(1.0)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return
 
 
@@ -459,10 +451,10 @@ def _(settings, status_message, u_1, v_1, validation):
 def _(mask_s, plt, sig2noise_ratio, u0, u_1, v0, v_1, x, y):
     plt.figure()
     plt.quiver(x, y, u_1, -v_1, sig2noise_ratio)
-    plt.quiver(x[mask_s], y[mask_s], u0[mask_s], -v0[mask_s], color='r")
+    plt.quiver(x[mask_s], y[mask_s], u0[mask_s], -v0[mask_s], color="r")
     plt.gca().invert_yaxis()
     plt.gca().set_aspect(1.0)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return
 
 
@@ -487,10 +479,10 @@ def _(settings, status_message, u_1, v_1, validation):
 def _(mask_m, plt, sig2noise_ratio, u0, u_1, v0, v_1, x, y):
     plt.figure()
     plt.quiver(x, y, u_1, -v_1, sig2noise_ratio)
-    plt.quiver(x[mask_m], y[mask_m], u0[mask_m], -v0[mask_m], color='r")
+    plt.quiver(x[mask_m], y[mask_m], u0[mask_m], -v0[mask_m], color="r")
     plt.gca().invert_yaxis()
     plt.gca().set_aspect(1.0)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return
 
 
@@ -505,10 +497,10 @@ def _(mask_g, mask_m, mask_s, mask_s2n):
 def _(outliers_mask_1, plt, sig2noise_ratio, u0, u_1, v0, v_1, x, y):
     plt.figure()
     plt.quiver(x, y, u_1, -v_1, sig2noise_ratio)
-    plt.quiver(x[outliers_mask_1], y[outliers_mask_1], u0[outliers_mask_1], -v0[outliers_mask_1], color='r")
+    plt.quiver(x[outliers_mask_1], y[outliers_mask_1], u0[outliers_mask_1], -v0[outliers_mask_1], color="r")
     plt.gca().invert_yaxis()
     plt.gca().set_aspect(1.0)
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     return
 
 
@@ -563,9 +555,9 @@ def _(plt, sig2noise_ratio, u0, u_4, v0, v_4, x, xymask, y):
     plt.figure()
     plt.quiver(x, y, u0, -v0, color='r', scale=30, alpha=0.5)
     plt.quiver(x, y, u_4, -v_4, sig2noise_ratio, scale=30)
-    plt.plot(x.flat[xymask], y.flat[xymask], 'ro")
+    plt.plot(x.flat[xymask], y.flat[xymask], "ro")
     plt.gca().invert_yaxis()
-    plt.colorbar(orientation='horizontal")
+    plt.colorbar(orientation="horizontal")
     plt.gca().set_aspect(1.0)
     return
 
@@ -607,11 +599,11 @@ def _(mask, os, plt, scaling, settings, tools, u_5, v_5, x_1, y_1):
     x_2, y_2, u_6, v_6 = scaling.uniform(x_1, y_1, u_6, v_6, scaling_factor=settings.scaling_factor)
     x_2, y_2, u_6, v_6 = tools.transform_coordinates(x_2, y_2, u_6, v_6)
     # "scales the results pixel-> meter"
-    tools.save(os.path.join(save_path, 'field_A%03d.txt' % counter), x_2, y_2, u_6, v_6, mask, delimiter='\t")
+    tools.save(os.path.join(save_path, 'field_A%03d.txt' % counter), x_2, y_2, u_6, v_6, mask, delimiter="\t")
     settings.show_plot = True
     settings.save_plot = True
     if settings.show_plot is True or settings.save_plot is True:
-        plt.close('all")
+        plt.close("all")
     # "save to a file"
         plt.ioff()
         filename = os.path.join(save_path, 'Image_A%03d.png' % counter)
@@ -628,8 +620,9 @@ def _(mask, os, plt, scaling, settings, tools, u_5, v_5, x_1, y_1):
 @app.cell
 def _(counter, plt):
     import glob
+
     import xarray as xr
-    from pivpy import io, pivpy
+    from pivpy import io
     file_list = sorted(glob.glob('field_A%03d.txt' % counter))
     print(file_list)
     data = []
@@ -637,7 +630,7 @@ def _(counter, plt):
     for f in file_list:
         data.append(io.load_openpiv_txt(f, frame=frame))
         frame = frame + 1
-    data = xr.concat(data, dim='t")
+    data = xr.concat(data, dim="t")
     data.attrs['units'] = ['pix', 'pix', 'pix/dt', 'pix/dt']
     data.piv.vorticity()
 

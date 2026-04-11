@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -17,17 +17,8 @@ app = marimo.App(layout_file="layouts/test20_windef.grid.json")
 
 @app.cell(hide_code=True)
 def _():
-    from openpiv import windef
-    from openpiv import tools, scaling, validation, filters, preprocess
-    import openpiv.pyprocess as process
-    from openpiv import pyprocess
-    import numpy as np
-    import pathlib
-    from time import time
-    import warnings
+    from openpiv import tools, windef
 
-
-    import matplotlib.pyplot as plt
     import marimo as mo
 
     return mo, tools, windef
@@ -95,8 +86,8 @@ def _(mo, windef):
 
 @app.cell(hide_code=True)
 def _(mo, piv_form, run_button, settings, tools, windef):
-    import io
     import contextlib
+    import io
 
     # Execution cell
     if run_button.value:

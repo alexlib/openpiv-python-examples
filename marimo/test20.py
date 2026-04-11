@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -35,21 +35,19 @@ def _(mo):
 
 @app.cell
 def _():
-    from openpiv import tools, pyprocess, validation, filters, scaling
-
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
+    from openpiv import filters, pyprocess, scaling, tools, validation
     # '%matplotlib inline' command supported automatically in marimo
 
-    import imageio
 
     return filters, np, plt, pyprocess, scaling, tools, validation
 
 
 @app.cell
 def _(tools):
-    frame_a = tools.imread("test20/t_23.png")
-    frame_b = tools.imread("test20/t_24.png")
+    frame_a = tools.imread("data/test20/t_23.png")
+    frame_b = tools.imread("data/test20/t_24.png")
     return frame_a, frame_b
 
 

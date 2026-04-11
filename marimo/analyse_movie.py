@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -57,15 +57,15 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
     return np, plt
 
 
 @app.cell
 def _():
-    from openpiv import pyprocess, piv
+    from openpiv import pyprocess
 
     return (pyprocess,)
 
@@ -75,8 +75,7 @@ def _(cv2, pyprocess):
     # the video is the jet PIV from Youtube
     # https://www.youtube.com/watch?v=EeS1rYMZUxI&ab_channel=USUExperimentalFluidDynamicsLab
     # all the rights reserved to the authors
-    from typing import overload
-    vidcap = cv2.VideoCapture(test_movie/videoplayback.mp4")
+    vidcap = cv2.VideoCapture("data/test_movie/videoplayback.mp4")
     success, image1 = vidcap.read()
     count = 0
     U = []
@@ -120,7 +119,7 @@ def _(Umean, Vmean, image1, np, plt, x, y):
     Q= ax.quiver(x,y,Umean,Vmean,Umean**2+Vmean**2,scale=50, width=.007)
     # plt.show()
     plt.plot(np.mean(Umean,axis=1)*30,y[:,0],color='r',lw=3)
-    plt.colorbar(Q, orientation='horizontal")
+    plt.colorbar(Q, orientation="horizontal")
     return
 
 

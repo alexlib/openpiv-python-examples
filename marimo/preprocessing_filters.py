@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -36,12 +36,10 @@ def _(mo):
 
 @app.cell
 def _():
-    from skimage import exposure, filters, util
-    from openpiv import preprocess as piv_pre
     import openpiv.tools as piv_tls
-    import numpy as np
-    import matplotlib as mpl
     from matplotlib import pyplot as plt
+    from openpiv import preprocess as piv_pre
+    from skimage import exposure
 
     return exposure, piv_pre, piv_tls, plt
 

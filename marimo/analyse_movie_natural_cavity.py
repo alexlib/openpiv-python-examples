@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -37,23 +37,23 @@ def _():
 
 @app.cell
 def _():
-    import numpy as np
     import matplotlib.pyplot as plt
+    import numpy as np
 
     return np, plt
 
 
 @app.cell
 def _():
-    from openpiv import pyprocess, piv
+    from openpiv import piv
 
     return (piv,)
 
 
 @app.cell
 def _(cv2, piv):
-    vidcap = cv2.VideoCapture('/home/user/Downloads/cavity.mov")
-    # vidcap = cv2.VideoCapture(test_movie/Manikin_Thermal_Plume.MOV")
+    vidcap = cv2.VideoCapture("/home/user/Downloads/cavity.mov")
+    # vidcap = cv2.VideoCapture("data/test_movie/Manikin_Thermal_Plume.MOV")
     success, image1 = vidcap.read()
     count = 0
     U = []
@@ -81,13 +81,13 @@ def _(U, V, np):
 @app.cell
 def _(Umean, Vmean, image1, np, plt, x, y):
     fig,ax = plt.subplots(figsize=(12,24))
-    ax.imshow(image1,cmap='gray")
+    ax.imshow(image1,cmap="gray")
     cm = ax.quiver(x,y.max()-y,Umean,Vmean,np.abs(Vmean),scale=90,width=.008)
     # plt.show()
     # plt.plot(x[10,:], np.nanmean(Vmean[:10],axis=0)*100+200,color='r',lw=3)
-    # plt.plot(np.nanmean(Umean,axis=1)*2+50,y[:,5],lw=3,color='k")
-    plt.title('Quiver and U(y) profile")
-    plt.colorbar(cm, orientation='horizontal');
+    # plt.plot(np.nanmean(Umean,axis=1)*2+50,y[:,5],lw=3,color="k")
+    plt.title("Quiver and U(y) profile")
+    plt.colorbar(cm, orientation='horizontal')
     return
 
 

@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.11"
+# requires-python = ">="3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -59,7 +59,7 @@ def _():
 
 @app.cell
 def _(plt, tools):
-    two_phase_image = tools.imread("two_phase_piv/artificial_A.tif")
+    two_phase_image = tools.imread("data/two_phase_piv/artificial_A.tif")
     plt.figure(figsize=(10,10))
     plt.imshow(two_phase_image)
     plt.show()
@@ -122,8 +122,8 @@ def _(mo):
 def _(phase_separation, plt, two_phase_image):
     # Plot size distribution
     plt.hist( phase_separation.get_particles_size_array(two_phase_image), 30)
-    plt.yscale('log")
-    plt.title('Particle size distribution")
+    plt.yscale("log")
+    plt.title("Particle size distribution")
     plt.show()
     return
 
@@ -154,11 +154,11 @@ def _(phase_separation, plt, two_phase_image):
     # First plot size-brightness map
     sb_map = phase_separation.get_size_brightness_map( two_phase_image ) # It is possible to sum over maps of multiple images
     plt.figure(figsize=(10,8))
-    plt.imshow( sb_map, interpolation='nearest', aspect='auto', origin='lower', cmap='jet")
+    plt.imshow( sb_map, interpolation='nearest', aspect='auto', origin='lower', cmap="jet")
     plt.colorbar()
-    plt.xlabel('Brightness")
-    plt.ylabel('Size (px)")
-    plt.title('Signal density")
+    plt.xlabel("Brightness")
+    plt.ylabel("Size (px)")
+    plt.title("Signal density")
     plt.show()
     return
 
@@ -194,8 +194,8 @@ def _(mo):
 
 @app.cell
 def _(plt, tools):
-    raw_A = tools.imread(two_phase_piv/real_A.tif")
-    raw_B = tools.imread(two_phase_piv/real_B.tif")
+    raw_A = tools.imread("data/two_phase_piv/real_A.tif")
+    raw_B = tools.imread("data/two_phase_piv/real_B.tif")
     _fig, _ax = plt.subplots(1, 2, figsize=(16, 10))
     _ax[0].imshow(raw_A)
     _ax[1].imshow(raw_B)
@@ -251,7 +251,7 @@ def _(carrier_A, carrier_B, np, pyprocess):
     u0, v0, sig2noise = pyprocess.extended_search_area_piv( carrier_A.astype(np.int32), carrier_B.astype(np.int32),
                     subpixel_method ='parabolic', window_size=winsize, 
                     overlap=overlap, dt=dt, search_area_size=searchsize, 
-                    sig2noise_method='peak2peak")
+                    sig2noise_method="peak2peak")
     x, y = pyprocess.get_coordinates(carrier_A.shape,searchsize,overlap)
     return dt, scaling_factor, sig2noise, u0, v0, x, y
 
@@ -281,7 +281,7 @@ def _(
 @app.cell
 def _(plt, scaling_factor, tools):
     _fig, _ax = plt.subplots(figsize=(16, 10))
-    tools.display_vector_field('preview.txt', on_img=True, image_name=two_phase_piv/real_A.tif', scaling_factor=scaling_factor, ax=_ax)
+    tools.display_vector_field('preview.txt', on_img=True, image_name=data/two_phase_piv/real_A.tif', scaling_factor=scaling_factor, ax=_ax)
     return
 
 
@@ -324,7 +324,7 @@ def _(dt, np, plt, scaling_factor, solid_A, solid_B, tools):
     width = solid_A.shape[1] / scaling_factor
     height = solid_A.shape[0] / scaling_factor
     fig2, ax2 = plt.subplots(figsize=(16, 10))
-    ax2.imshow(solid_A, extent=[0, width, 0, height], origin='lower")
+    ax2.imshow(solid_A, extent=[0, width, 0, height], origin="lower")
     tools.display_vector_field('preview.txt', scaling_factor=scaling_factor, ax=ax2)
     ax2.invert_yaxis()
     ax2.quiver(PTV_X, PTV_Y, PTV_U, PTV_V, color='yellow', width=0.003)
