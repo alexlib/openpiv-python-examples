@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
 #     "openpiv",
@@ -39,7 +39,6 @@ def _():
     import numpy as np
     from openpiv import filters, pyprocess, scaling, tools, validation
     # '%matplotlib inline' command supported automatically in marimo
-
 
     return filters, np, plt, pyprocess, scaling, tools, validation
 
@@ -135,7 +134,7 @@ def _(plt, tools):
         scale=50,
         width=0.0035,
         on_img=True,
-        image_name="test1/exp1_001_a.bmp",
+        image_name="data/test1/exp1_001_a.bmp",
     )  # scale defines here the arrow length  # width is the thickness of the arrow  # overlay on the image
     return
 

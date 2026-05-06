@@ -187,3 +187,11 @@ notebooks/preview.txt
 test10/B001_1.tif.txt
 test11/A001_1.tif.txt
 test9/karman_16Hz_000_A.jpg.txt
+/.agents
+/.qwen
+/marimo
+marimo/__marimo__/session/tutorial1.py.json
+/quarto-1.9.37
+*.gz
+skills-lock.json
+/.claude
