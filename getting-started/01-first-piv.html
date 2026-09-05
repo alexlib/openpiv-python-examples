@@ -76,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4a1c58d262a24fd82705d9e365d43e90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3e110284a13d48d4adc39ad07851e26f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -148,35 +148,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="code-example" class="level2">
 <h2 class="anchored" data-anchor-id="code-example">Code Example</h2>
 <p>Let’s start by loading the test images and visualizing them:</p>
-<div id="34945a71" class="cell" data-execute="null" data-kernel="python3" data-execution_count="1">
+<div id="be9bfb1b" class="cell" data-execute="null" data-kernel="python3" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pathlib</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> openpiv <span class="im">import</span> tools, pyprocess, validation, filters, scaling</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the test images - use absolute path to the data folder</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>repo_root <span class="op">=</span> <span class="st">"/home/user/Documents/GitHub/openpiv-python-examples/openpiv-tutorials/data/test1"</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>frame_a <span class="op">=</span> tools.imread(<span class="ss">f"</span><span class="sc">{</span>repo_root<span class="sc">}</span><span class="ss">/exp1_001_a.bmp"</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>frame_b <span class="op">=</span> tools.imread(<span class="ss">f"</span><span class="sc">{</span>repo_root<span class="sc">}</span><span class="ss">/exp1_001_b.bmp"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display both frames</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].imshow(frame_a, cmap<span class="op">=</span>plt.cm.gray)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Frame A (t)"</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].imshow(frame_b, cmap<span class="op">=</span>plt.cm.gray)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Frame B (t+dt)"</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the test images - portable path (works both locally and in CI)</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># data/ lives at repo root; openpiv-tutorials/ is one level below</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _p <span class="kw">in</span> [pathlib.Path(<span class="st">"../data/test1"</span>), pathlib.Path(<span class="st">"data/test1"</span>), pathlib.Path(<span class="st">"../../data/test1"</span>)]:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (_p <span class="op">/</span> <span class="st">"exp1_001_a.bmp"</span>).exists():</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        data_path <span class="op">=</span> _p</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">break</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    data_path <span class="op">=</span> pathlib.Path(<span class="st">"../data/test1"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>frame_a <span class="op">=</span> tools.imread(<span class="bu">str</span>(data_path <span class="op">/</span> <span class="st">"exp1_001_a.bmp"</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>frame_b <span class="op">=</span> tools.imread(<span class="bu">str</span>(data_path <span class="op">/</span> <span class="st">"exp1_001_b.bmp"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Display both frames</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>fig, axes <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].imshow(frame_a, cmap<span class="op">=</span>plt.cm.gray)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">0</span>].set_title(<span class="st">"Frame A (t)"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].imshow(frame_b, cmap<span class="op">=</span>plt.cm.gray)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>axes[<span class="dv">1</span>].set_title(<span class="st">"Frame B (t+dt)"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01-first-piv_files/figure-html/cell-2-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="01-first-piv_files/figure-html/cell-2-output-1.png" width="1142" height="436" class="figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Now let’s apply the PIV algorithm to find the displacement:</p>
-<div id="c78d27d1" class="cell" data-execute="null" data-kernel="python3" data-execution_count="2">
+<div id="51d1bbe9" class="cell" data-execute="null" data-kernel="python3" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define PIV parameters</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>winsize <span class="op">=</span> <span class="dv">32</span>      <span class="co"># interrogation window size in pixels</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>searchsize <span class="op">=</span> <span class="dv">38</span>    <span class="co"># search area size in pixels  </span></span>
@@ -207,51 +213,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Velocity field shape: (13, 19)
 Number of vectors: 247
-Signal-to-noise ratio range: 0.00 - 2.66</code></pre>
+Signal-to-noise ratio range: 1.58 - 4.87</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p><strong>OpenPIV 0.26.0:</strong> <code>scipy.fft</code> is now the default FFT backend (2–3× faster than <code>numpy.fft</code>). Install the optional Rust extension with <code>pip install openpiv[rust]</code> and select via <code>backend="scipy"</code> | <code>"rust"</code> | <code>"auto"</code>.</p>
+</blockquote>
+<p>Benchmark the <code>scipy.fft</code> vs optional Rust backend (0.26.0):</p>
+<div id="602fd067" class="cell" data-execute="null" data-kernel="python3" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> importlib.metadata, time</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"openpiv"</span>, importlib.metadata.version(<span class="st">"openpiv"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"HAS_RUST ="</span>, <span class="bu">getattr</span>(pyprocess, <span class="st">"HAS_RUST"</span>, <span class="va">False</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Explicit backend selection — auto prefers Rust if installed</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> backend <span class="kw">in</span> ([<span class="st">"scipy"</span>, <span class="st">"rust"</span>] <span class="cf">if</span> <span class="bu">getattr</span>(pyprocess, <span class="st">"HAS_RUST"</span>, <span class="va">False</span>) <span class="cf">else</span> [<span class="st">"scipy"</span>]):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    t0 <span class="op">=</span> time.time()</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    u, v, _ <span class="op">=</span> pyprocess.extended_search_area_piv(frame_a.astype(np.int32), frame_b.astype(np.int32), window_size<span class="op">=</span>winsize, overlap<span class="op">=</span>overlap, dt<span class="op">=</span>dt, search_area_size<span class="op">=</span>searchsize, sig2noise_method<span class="op">=</span><span class="st">"peak2peak"</span>, backend<span class="op">=</span>backend)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>backend<span class="sc">:5s}</span><span class="ss">: </span><span class="sc">{</span>time<span class="sc">.</span>time()<span class="op">-</span>t0<span class="sc">:.3f}</span><span class="ss">s  mean u=</span><span class="sc">{</span>u<span class="sc">.</span>mean()<span class="sc">:.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>openpiv 0.26.0
+HAS_RUST = False
+scipy: 0.026s  mean u=-4.83</code></pre>
 </div>
 </div>
 <p>Validate the results using signal-to-noise ratio:</p>
-<div id="ac853a94" class="cell" data-execute="null" data-kernel="python3" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate using signal-to-noise ratio</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>flags <span class="op">=</span> validation.sig2noise_val(sig2noise, threshold<span class="op">=</span><span class="fl">1.05</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace outliers</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>u2, v2 <span class="op">=</span> filters.replace_outliers(</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    u0, v0, flags, method<span class="op">=</span><span class="st">"localmean"</span>, max_iter<span class="op">=</span><span class="dv">3</span>, kernel_size<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to physical units</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>x_1, y_1, u3, v3 <span class="op">=</span> scaling.uniform(x, y, u2, v2, scaling_factor<span class="op">=</span><span class="fl">96.52</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>x_1, y_1, u3, v3 <span class="op">=</span> tools.transform_coordinates(x_1, y_1, u3, v3)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Validated vectors: </span><span class="sc">{</span>flags<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>flags<span class="sc">.</span>size<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Velocity range U: </span><span class="sc">{</span>u3<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.2f}</span><span class="ss"> to </span><span class="sc">{</span>u3<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.2f}</span><span class="ss"> pix/s"</span>)</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Velocity range V: </span><span class="sc">{</span>v3<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.2f}</span><span class="ss"> to </span><span class="sc">{</span>v3<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.2f}</span><span class="ss"> pix/s"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="b3b43c8d" class="cell" data-execute="null" data-kernel="python3" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validate using signal-to-noise ratio</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>flags <span class="op">=</span> validation.sig2noise_val(sig2noise, threshold<span class="op">=</span><span class="fl">1.05</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace outliers</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>u2, v2 <span class="op">=</span> filters.replace_outliers(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    u0, v0, flags, method<span class="op">=</span><span class="st">"localmean"</span>, max_iter<span class="op">=</span><span class="dv">3</span>, kernel_size<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to physical units</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>x_1, y_1, u3, v3 <span class="op">=</span> scaling.uniform(x, y, u2, v2, scaling_factor<span class="op">=</span><span class="fl">96.52</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>x_1, y_1, u3, v3 <span class="op">=</span> tools.transform_coordinates(x_1, y_1, u3, v3)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Validated vectors: </span><span class="sc">{</span>flags<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> / </span><span class="sc">{</span>flags<span class="sc">.</span>size<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Velocity range U: </span><span class="sc">{</span>u3<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.2f}</span><span class="ss"> to </span><span class="sc">{</span>u3<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.2f}</span><span class="ss"> pix/s"</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Velocity range V: </span><span class="sc">{</span>v3<span class="sc">.</span><span class="bu">min</span>()<span class="sc">:.2f}</span><span class="ss"> to </span><span class="sc">{</span>v3<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.2f}</span><span class="ss"> pix/s"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Validated vectors: 17 / 247
-Velocity range U: -0.80 to 0.92 pix/s
-Velocity range V: -3.54 to -2.12 pix/s</code></pre>
+<pre><code>Validated vectors: 0 / 247
+Velocity range U: -0.78 to 0.88 pix/s
+Velocity range V: -3.43 to -2.15 pix/s</code></pre>
 </div>
 </div>
 <p>Visualize the velocity field:</p>
-<div id="671170d1" class="cell" data-execute="null" data-kernel="python3" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the vector field using quiver plot</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Q <span class="op">=</span> ax.quiver(x_1, y_1, u3, <span class="op">-</span>v3, sig2noise, scale<span class="op">=</span><span class="dv">50</span>, pivot<span class="op">=</span><span class="st">'middle'</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">'equal'</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'X (pixels)'</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Y (pixels)'</span>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"OpenPIV First Analysis - Velocity Field"</span>)</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, frame_a.shape[<span class="dv">1</span>])</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(frame_a.shape[<span class="dv">0</span>], <span class="dv">0</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>plt.colorbar(Q, label<span class="op">=</span><span class="st">'Signal-to-Noise Ratio'</span>)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="c4c76850" class="cell" data-execute="null" data-kernel="python3" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the vector field using quiver plot</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>Q <span class="op">=</span> ax.quiver(x_1, y_1, u3, <span class="op">-</span>v3, sig2noise, scale<span class="op">=</span><span class="dv">50</span>, pivot<span class="op">=</span><span class="st">'middle'</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>ax.set_aspect(<span class="st">'equal'</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>ax.invert_yaxis()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">'X (pixels)'</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">'Y (pixels)'</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"OpenPIV First Analysis - Velocity Field"</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>ax.set_xlim(<span class="dv">0</span>, frame_a.shape[<span class="dv">1</span>])</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>ax.set_ylim(frame_a.shape[<span class="dv">0</span>], <span class="dv">0</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>plt.colorbar(Q, label<span class="op">=</span><span class="st">'Signal-to-Noise Ratio'</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="01-first-piv_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="01-first-piv_files/figure-html/cell-6-output-1.png" width="906" height="758" class="figure-img"></p>
 </figure>
 </div>
 </div>

@@ -1,137 +1,10 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "OpenPIV Tutorials",
-    "section": "",
-    "text": "Interactive tutorials for learning Particle Image Velocimetry (PIV) using OpenPIV Python library.\n\n\nThese tutorials are organized by difficulty level, from basics to advanced techniques.\n\n\n\nFirst PIV Analysis - Learn the fundamentals of PIV analysis\nMultiprocessing - Speed up processing with multiple cores\n\n\n\n\n\n\n\n\nDataset\nDescription\nApplication\n\n\n\n\ntest1\nSimple two-image PIV\nBasic analysis\n\n\ntest20\nMultiple image pairs\nMultipass processing\n\n\ntest3\nVon Karman vortex street\nAdvanced validation\n\n\n\n\n\n\n\n\nTo run interactive notebooks with marimo:\n# Install marimo\npip install marimo\n\n# Run a notebook interactively\nmarimo run ../marimo/tutorial1.py\n\n\n\nThis website shows pre-rendered output from tutorials. Each page displays:\n\nCode cells with explanations\nExecuted results\nInteractive visualizations\n\n\n\n\nDownload the .py marimo files from the marimo/ folder in the main repository and run locally.\n\n\n\n\nTest data is included in the data/ folder: - test1/ - Basic PIV test images - test20/ - Multiple image pairs for multipass",
-    "crumbs": [
-      "OpenPIV Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#getting-started",
-    "href": "index.html#getting-started",
-    "title": "OpenPIV Tutorials",
-    "section": "",
-    "text": "These tutorials are organized by difficulty level, from basics to advanced techniques.\n\n\n\nFirst PIV Analysis - Learn the fundamentals of PIV analysis\nMultiprocessing - Speed up processing with multiple cores",
-    "crumbs": [
-      "OpenPIV Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#featured-test-cases",
-    "href": "index.html#featured-test-cases",
-    "title": "OpenPIV Tutorials",
-    "section": "",
-    "text": "Dataset\nDescription\nApplication\n\n\n\n\ntest1\nSimple two-image PIV\nBasic analysis\n\n\ntest20\nMultiple image pairs\nMultipass processing\n\n\ntest3\nVon Karman vortex street\nAdvanced validation",
-    "crumbs": [
-      "OpenPIV Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#running-the-tutorials",
-    "href": "index.html#running-the-tutorials",
-    "title": "OpenPIV Tutorials",
-    "section": "",
-    "text": "To run interactive notebooks with marimo:\n# Install marimo\npip install marimo\n\n# Run a notebook interactively\nmarimo run ../marimo/tutorial1.py\n\n\n\nThis website shows pre-rendered output from tutorials. Each page displays:\n\nCode cells with explanations\nExecuted results\nInteractive visualizations\n\n\n\n\nDownload the .py marimo files from the marimo/ folder in the main repository and run locally.",
-    "crumbs": [
-      "OpenPIV Tutorials"
-    ]
-  },
-  {
-    "objectID": "index.html#data",
-    "href": "index.html#data",
-    "title": "OpenPIV Tutorials",
-    "section": "",
-    "text": "Test data is included in the data/ folder: - test1/ - Basic PIV test images - test20/ - Multiple image pairs for multipass",
-    "crumbs": [
-      "OpenPIV Tutorials"
-    ]
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html",
-    "href": "getting-started/02-multiproc.html",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "This tutorial shows how to use OpenPIV’s multiprocessing capabilities to analyze multiple image pairs in parallel.\n\n\nWhen analyzing movies or long sequences, you need to process many image pairs. Multiprocessing distributes the workload across multiple CPU cores, significantly reducing processing time.\n\n\n\nHere’s how to set up parallel processing:\n\nimport pathlib\nimport numpy as np\nfrom openpiv import tools, scaling, pyprocess, validation, filters\n\n# Define a worker function for processing each image pair\ndef process_pair(args):\n    \"\"\"Process a single image pair.\"\"\"\n    file_a, file_b, output_idx = args\n    \n    # Read images\n    img_a = tools.imread(pathlib.Path(\"data/test1\") / file_a)\n    img_b = tools.imread(pathlib.Path(\"data/test1\") / file_b)\n    \n    # Convert to int32 for processing\n    img_a = (img_a * 1024).astype(np.int32)\n    img_b = (img_b * 1024).astype(np.int32)\n    \n    # Run PIV analysis\n    u, v, sig2noise = pyprocess.extended_search_area_piv(\n        img_a, img_b,\n        window_size=32,\n        overlap=16,\n        dt=0.02,\n        search_area_size=38,\n        sig2noise_method='peak2peak'\n    )\n    \n    # Validate\n    mask = validation.sig2noise_val(sig2noise, threshold=1.5)\n    \n    # Get coordinates\n    x, y = pyprocess.get_coordinates(\n        image_size=img_a.shape,\n        search_area_size=38,\n        overlap=16\n    )\n    \n    return x, y, u, v, mask\n\nprint(\"Worker function defined for parallel processing\")\n\nWorker function defined for parallel processing\n\n\n\n\n\nOpenPIV provides a convenient class for managing parallel processing:\n\n# Check available test files\nimport os\ntest_path = pathlib.Path(\"data/test1\")\nfiles = list(test_path.glob(\"*.bmp\"))\nprint(f\"Available test images: {len(files)}\")\nfor f in sorted(files):\n    print(f\"  - {f.name}\")\n\nAvailable test images: 0\n\n\n\n\n\nMultiprocessing is essential for: - Analyzing long image sequences - Processing high-resolution images - Reducing overall processing time\n\n\n\nTry the Multipass PIV tutorial to learn about iterative refinement for improved accuracy."
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html#why-multiprocessing",
-    "href": "getting-started/02-multiproc.html#why-multiprocessing",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "When analyzing movies or long sequences, you need to process many image pairs. Multiprocessing distributes the workload across multiple CPU cores, significantly reducing processing time."
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html#code-example",
-    "href": "getting-started/02-multiproc.html#code-example",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "Here’s how to set up parallel processing:\n\nimport pathlib\nimport numpy as np\nfrom openpiv import tools, scaling, pyprocess, validation, filters\n\n# Define a worker function for processing each image pair\ndef process_pair(args):\n    \"\"\"Process a single image pair.\"\"\"\n    file_a, file_b, output_idx = args\n    \n    # Read images\n    img_a = tools.imread(pathlib.Path(\"data/test1\") / file_a)\n    img_b = tools.imread(pathlib.Path(\"data/test1\") / file_b)\n    \n    # Convert to int32 for processing\n    img_a = (img_a * 1024).astype(np.int32)\n    img_b = (img_b * 1024).astype(np.int32)\n    \n    # Run PIV analysis\n    u, v, sig2noise = pyprocess.extended_search_area_piv(\n        img_a, img_b,\n        window_size=32,\n        overlap=16,\n        dt=0.02,\n        search_area_size=38,\n        sig2noise_method='peak2peak'\n    )\n    \n    # Validate\n    mask = validation.sig2noise_val(sig2noise, threshold=1.5)\n    \n    # Get coordinates\n    x, y = pyprocess.get_coordinates(\n        image_size=img_a.shape,\n        search_area_size=38,\n        overlap=16\n    )\n    \n    return x, y, u, v, mask\n\nprint(\"Worker function defined for parallel processing\")\n\nWorker function defined for parallel processing"
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html#using-the-multiprocesser",
-    "href": "getting-started/02-multiproc.html#using-the-multiprocesser",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "OpenPIV provides a convenient class for managing parallel processing:\n\n# Check available test files\nimport os\ntest_path = pathlib.Path(\"data/test1\")\nfiles = list(test_path.glob(\"*.bmp\"))\nprint(f\"Available test images: {len(files)}\")\nfor f in sorted(files):\n    print(f\"  - {f.name}\")\n\nAvailable test images: 0"
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html#summary",
-    "href": "getting-started/02-multiproc.html#summary",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "Multiprocessing is essential for: - Analyzing long image sequences - Processing high-resolution images - Reducing overall processing time"
-  },
-  {
-    "objectID": "getting-started/02-multiproc.html#next-steps",
-    "href": "getting-started/02-multiproc.html#next-steps",
-    "title": "Multiprocessing for Speed",
-    "section": "",
-    "text": "Try the Multipass PIV tutorial to learn about iterative refinement for improved accuracy."
-  },
-  {
-    "objectID": "getting-started/01-first-piv.html",
-    "href": "getting-started/01-first-piv.html",
-    "title": "First PIV Analysis",
-    "section": "",
-    "text": "This tutorial demonstrates the basics of Particle Image Velocimetry (PIV) analysis using OpenPIV. You’ll learn how to: - Load image pairs - Apply the PIV correlation algorithm - Validate and filter results - Visualize velocity fields\n\n\nPIV is a non-intrusive flow measurement technique that calculates velocity fields from pairs of images captured at short time intervals. Particles seeded in the flow are tracked between two laser pulses, and their displacement provides velocity information.\n\n\n\nLet’s start by loading the test images and visualizing them:\n\nimport pathlib\nfrom openpiv import tools, pyprocess, validation, filters, scaling\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Load the test images - use absolute path to the data folder\nrepo_root = \"/home/user/Documents/GitHub/openpiv-python-examples/openpiv-tutorials/data/test1\"\nframe_a = tools.imread(f\"{repo_root}/exp1_001_a.bmp\")\nframe_b = tools.imread(f\"{repo_root}/exp1_001_b.bmp\")\n\n# Display both frames\nfig, axes = plt.subplots(1, 2, figsize=(12, 8))\naxes[0].imshow(frame_a, cmap=plt.cm.gray)\naxes[0].set_title(\"Frame A (t)\")\naxes[1].imshow(frame_b, cmap=plt.cm.gray)\naxes[1].set_title(\"Frame B (t+dt)\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nNow let’s apply the PIV algorithm to find the displacement:\n\n# Define PIV parameters\nwinsize = 32      # interrogation window size in pixels\nsearchsize = 38    # search area size in pixels  \noverlap = 12       # overlap between windows (50%)\ndt = 0.02        # time between pulses (seconds)\n\n# Run the PIV analysis\nu0, v0, sig2noise = pyprocess.extended_search_area_piv(\n    frame_a.astype(np.int32),\n    frame_b.astype(np.int32),\n    window_size=winsize,\n    overlap=overlap,\n    dt=dt,\n    search_area_size=searchsize,\n    sig2noise_method=\"peak2peak\",\n)\n\n# Get the coordinate grid\nx, y = pyprocess.get_coordinates(\n    image_size=frame_a.shape, \n    search_area_size=searchsize, \n    overlap=overlap\n)\n\nprint(f\"Velocity field shape: {u0.shape}\")\nprint(f\"Number of vectors: {u0.size}\")\nprint(f\"Signal-to-noise ratio range: {sig2noise.min():.2f} - {sig2noise.max():.2f}\")\n\nVelocity field shape: (13, 19)\nNumber of vectors: 247\nSignal-to-noise ratio range: 0.00 - 2.66\n\n\nValidate the results using signal-to-noise ratio:\n\n# Validate using signal-to-noise ratio\nflags = validation.sig2noise_val(sig2noise, threshold=1.05)\n\n# Replace outliers\nu2, v2 = filters.replace_outliers(\n    u0, v0, flags, method=\"localmean\", max_iter=3, kernel_size=3\n)\n\n# Convert to physical units\nx_1, y_1, u3, v3 = scaling.uniform(x, y, u2, v2, scaling_factor=96.52)\nx_1, y_1, u3, v3 = tools.transform_coordinates(x_1, y_1, u3, v3)\n\nprint(f\"Validated vectors: {flags.sum()} / {flags.size}\")\nprint(f\"Velocity range U: {u3.min():.2f} to {u3.max():.2f} pix/s\")\nprint(f\"Velocity range V: {v3.min():.2f} to {v3.max():.2f} pix/s\")\n\nValidated vectors: 17 / 247\nVelocity range U: -0.80 to 0.92 pix/s\nVelocity range V: -3.54 to -2.12 pix/s\n\n\nVisualize the velocity field:\n\n# Display the vector field using quiver plot\nfig, ax = plt.subplots(figsize=(10, 8))\nQ = ax.quiver(x_1, y_1, u3, -v3, sig2noise, scale=50, pivot='middle')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title(\"OpenPIV First Analysis - Velocity Field\")\nax.set_xlim(0, frame_a.shape[1])\nax.set_ylim(frame_a.shape[0], 0)\nplt.colorbar(Q, label='Signal-to-Noise Ratio')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nIn this tutorial you: 1. Loaded image pairs using OpenPIV tools 2. Applied the extended search area PIV algorithm 3. Validated results with signal-to-noise ratio filtering 4. Replaced outlier vectors using local mean filtering 5. Visualized the velocity field\n\n\n\n\nTry the Multiprocessing tutorial to speed up analysis\nExperiment with different window sizes"
-  },
-  {
-    "objectID": "getting-started/01-first-piv.html#theory",
-    "href": "getting-started/01-first-piv.html#theory",
-    "title": "First PIV Analysis",
-    "section": "",
-    "text": "PIV is a non-intrusive flow measurement technique that calculates velocity fields from pairs of images captured at short time intervals. Particles seeded in the flow are tracked between two laser pulses, and their displacement provides velocity information."
-  },
-  {
-    "objectID": "getting-started/01-first-piv.html#code-example",
-    "href": "getting-started/01-first-piv.html#code-example",
-    "title": "First PIV Analysis",
-    "section": "",
-    "text": "Let’s start by loading the test images and visualizing them:\n\nimport pathlib\nfrom openpiv import tools, pyprocess, validation, filters, scaling\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Load the test images - use absolute path to the data folder\nrepo_root = \"/home/user/Documents/GitHub/openpiv-python-examples/openpiv-tutorials/data/test1\"\nframe_a = tools.imread(f\"{repo_root}/exp1_001_a.bmp\")\nframe_b = tools.imread(f\"{repo_root}/exp1_001_b.bmp\")\n\n# Display both frames\nfig, axes = plt.subplots(1, 2, figsize=(12, 8))\naxes[0].imshow(frame_a, cmap=plt.cm.gray)\naxes[0].set_title(\"Frame A (t)\")\naxes[1].imshow(frame_b, cmap=plt.cm.gray)\naxes[1].set_title(\"Frame B (t+dt)\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nNow let’s apply the PIV algorithm to find the displacement:\n\n# Define PIV parameters\nwinsize = 32      # interrogation window size in pixels\nsearchsize = 38    # search area size in pixels  \noverlap = 12       # overlap between windows (50%)\ndt = 0.02        # time between pulses (seconds)\n\n# Run the PIV analysis\nu0, v0, sig2noise = pyprocess.extended_search_area_piv(\n    frame_a.astype(np.int32),\n    frame_b.astype(np.int32),\n    window_size=winsize,\n    overlap=overlap,\n    dt=dt,\n    search_area_size=searchsize,\n    sig2noise_method=\"peak2peak\",\n)\n\n# Get the coordinate grid\nx, y = pyprocess.get_coordinates(\n    image_size=frame_a.shape, \n    search_area_size=searchsize, \n    overlap=overlap\n)\n\nprint(f\"Velocity field shape: {u0.shape}\")\nprint(f\"Number of vectors: {u0.size}\")\nprint(f\"Signal-to-noise ratio range: {sig2noise.min():.2f} - {sig2noise.max():.2f}\")\n\nVelocity field shape: (13, 19)\nNumber of vectors: 247\nSignal-to-noise ratio range: 0.00 - 2.66\n\n\nValidate the results using signal-to-noise ratio:\n\n# Validate using signal-to-noise ratio\nflags = validation.sig2noise_val(sig2noise, threshold=1.05)\n\n# Replace outliers\nu2, v2 = filters.replace_outliers(\n    u0, v0, flags, method=\"localmean\", max_iter=3, kernel_size=3\n)\n\n# Convert to physical units\nx_1, y_1, u3, v3 = scaling.uniform(x, y, u2, v2, scaling_factor=96.52)\nx_1, y_1, u3, v3 = tools.transform_coordinates(x_1, y_1, u3, v3)\n\nprint(f\"Validated vectors: {flags.sum()} / {flags.size}\")\nprint(f\"Velocity range U: {u3.min():.2f} to {u3.max():.2f} pix/s\")\nprint(f\"Velocity range V: {v3.min():.2f} to {v3.max():.2f} pix/s\")\n\nValidated vectors: 17 / 247\nVelocity range U: -0.80 to 0.92 pix/s\nVelocity range V: -3.54 to -2.12 pix/s\n\n\nVisualize the velocity field:\n\n# Display the vector field using quiver plot\nfig, ax = plt.subplots(figsize=(10, 8))\nQ = ax.quiver(x_1, y_1, u3, -v3, sig2noise, scale=50, pivot='middle')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title(\"OpenPIV First Analysis - Velocity Field\")\nax.set_xlim(0, frame_a.shape[1])\nax.set_ylim(frame_a.shape[0], 0)\nplt.colorbar(Q, label='Signal-to-Noise Ratio')\nplt.tight_layout()\nplt.show()"
-  },
-  {
-    "objectID": "getting-started/01-first-piv.html#summary",
-    "href": "getting-started/01-first-piv.html#summary",
-    "title": "First PIV Analysis",
-    "section": "",
-    "text": "In this tutorial you: 1. Loaded image pairs using OpenPIV tools 2. Applied the extended search area PIV algorithm 3. Validated results with signal-to-noise ratio filtering 4. Replaced outlier vectors using local mean filtering 5. Visualized the velocity field"
-  },
-  {
-    "objectID": "getting-started/01-first-piv.html#next-steps",
-    "href": "getting-started/01-first-piv.html#next-steps",
-    "title": "First PIV Analysis",
-    "section": "",
-    "text": "Try the Multiprocessing tutorial to speed up analysis\nExperiment with different window sizes"
-  },
-  {
     "objectID": "getting-started/01-first-piv-interactive.html",
     "href": "getting-started/01-first-piv-interactive.html",
     "title": "First PIV Analysis - Interactive",
     "section": "",
-    "text": "This interactive tutorial provides an introduction to Particle Image Velocimetry (PIV) analysis. The code cells below are interactive - you can edit and run them in your browser!\n\n\nTry adjusting the parameters and running the code:\n\nimport numpy as np\n\n# Define PIV parameters\nwinsize = 32       # Interrogation window size in pixels\nsearchsize = 38     # Search area size in pixels  \noverlap = 12         # Overlap between windows (50%)\ndt = 0.02           # Time between pulses in seconds\n\nprint(f\"Window size: {winsize} pixels\")\nprint(f\"Search size: {searchsize} pixels\")\nprint(f\"Overlap: {overlap} pixels ({overlap/winsize*100:.0f}% overlap)\")\nprint(f\"Time step: {dt*1000:.1f} ms\")\n\n\n\n\nModify the image size and calculate the number of interrogation windows:\n\nimage_size = 256\n\nn_windows_x = (image_size - searchsize) // overlap + 1\nn_windows_y = (image_size - searchsize) // overlap + 1\ntotal_windows = n_windows_x * n_windows_y\n\nprint(f\"Image size: {image_size} x {image_size} pixels\")\nprint(f\"Interrogation windows: {n_windows_x} x {n_windows_y}\")\nprint(f\"Total vectors: {total_windows}\")\n\n\n\n\nTry changing the displacement values:\n\ndx = 5.2   # Try changing this value!\ndy = -3.7  # Try changing this value!\n\nvx = dx / dt\nvy = dy / dt\n\nmagnitude = np.sqrt(vx**2 + vy**2)\ndirection = np.arctan2(vy, vx) * 180 / np.pi\n\nprint(f\"Displacement: dx = {dx:.1f} px, dy = {dy:.1f} px\")\nprint(f\"Velocity: vx = {vx:.1f} pix/s, vy = {vy:.1f} pix/s\")\nprint(f\"Magnitude: {magnitude:.1f} pix/s\")\nprint(f\"Direction: {direction:.1f} degrees\")\n\n\n\n\n\nnp.random.seed(42)\nsnr_values = np.random.uniform(1.0, 5.0, 100)\nthreshold = 1.05\n\nvalid = np.sum(snr_values &gt;= threshold)\ninvalid = np.sum(snr_values &lt; threshold)\n\nprint(f\"Threshold: {threshold}\")\nprint(f\"Valid vectors: {valid}/{len(snr_values)}\")\nprint(f\"Validation rate: {valid/len(snr_values)*100:.1f}%\")\n\n\n\n\nCreate a velocity field visualization:\n\nimport matplotlib.pyplot as plt\n\nx = np.linspace(0, 256, 20)\ny = np.linspace(0, 256, 20)\nX, Y = np.meshgrid(x, y)\n\nU = 10 * np.sin(2 * np.pi * X / 128)\nV = 10 * np.cos(2 * np.pi * Y / 128)\n\nfig, ax = plt.subplots(figsize=(8, 8))\nQ = ax.quiver(X, Y, U, V, np.sqrt(U**2 + V**2), scale=50, pivot='middle', cmap='viridis')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title('Synthetic Velocity Field')\nplt.colorbar(Q, label='Velocity Magnitude (pix/s)')\nplt.tight_layout()\n\nfig",
+    "text": "Requires openpiv&gt;=0.26.0. New: scipy.fft default and optional Rust via backend=\"rust\".\n\nThis interactive tutorial provides an introduction to Particle Image Velocimetry (PIV) analysis. The code cells below are interactive - you can edit and run them in your browser!\n\n\nTry adjusting the parameters and running the code:\n\nimport numpy as np\n\n# Define PIV parameters\nwinsize = 32       # Interrogation window size in pixels\nsearchsize = 38     # Search area size in pixels  \noverlap = 12         # Overlap between windows (50%)\ndt = 0.02           # Time between pulses in seconds\n\nprint(f\"Window size: {winsize} pixels\")\nprint(f\"Search size: {searchsize} pixels\")\nprint(f\"Overlap: {overlap} pixels ({overlap/winsize*100:.0f}% overlap)\")\nprint(f\"Time step: {dt*1000:.1f} ms\")\n\n\n\n\nModify the image size and calculate the number of interrogation windows:\n\nimage_size = 256\n\nn_windows_x = (image_size - searchsize) // overlap + 1\nn_windows_y = (image_size - searchsize) // overlap + 1\ntotal_windows = n_windows_x * n_windows_y\n\nprint(f\"Image size: {image_size} x {image_size} pixels\")\nprint(f\"Interrogation windows: {n_windows_x} x {n_windows_y}\")\nprint(f\"Total vectors: {total_windows}\")\n\n\n\n\nTry changing the displacement values:\n\ndx = 5.2   # Try changing this value!\ndy = -3.7  # Try changing this value!\n\nvx = dx / dt\nvy = dy / dt\n\nmagnitude = np.sqrt(vx**2 + vy**2)\ndirection = np.arctan2(vy, vx) * 180 / np.pi\n\nprint(f\"Displacement: dx = {dx:.1f} px, dy = {dy:.1f} px\")\nprint(f\"Velocity: vx = {vx:.1f} pix/s, vy = {vy:.1f} pix/s\")\nprint(f\"Magnitude: {magnitude:.1f} pix/s\")\nprint(f\"Direction: {direction:.1f} degrees\")\n\n\n\n\n\nnp.random.seed(42)\nsnr_values = np.random.uniform(1.0, 5.0, 100)\nthreshold = 1.05\n\nvalid = np.sum(snr_values &gt;= threshold)\ninvalid = np.sum(snr_values &lt; threshold)\n\nprint(f\"Threshold: {threshold}\")\nprint(f\"Valid vectors: {valid}/{len(snr_values)}\")\nprint(f\"Validation rate: {valid/len(snr_values)*100:.1f}%\")\n\n\n\n\nCreate a velocity field visualization:\n\nimport matplotlib.pyplot as plt\n\nx = np.linspace(0, 256, 20)\ny = np.linspace(0, 256, 20)\nX, Y = np.meshgrid(x, y)\n\nU = 10 * np.sin(2 * np.pi * X / 128)\nV = 10 * np.cos(2 * np.pi * Y / 128)\n\nfig, ax = plt.subplots(figsize=(8, 8))\nQ = ax.quiver(X, Y, U, V, np.sqrt(U**2 + V**2), scale=50, pivot='middle', cmap='viridis')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title('Synthetic Velocity Field')\nplt.colorbar(Q, label='Velocity Magnitude (pix/s)')\nplt.tight_layout()\n\nfig",
     "crumbs": [
       "Getting Started",
       "First PIV Analysis - Interactive"
@@ -193,6 +66,98 @@
     ]
   },
   {
+    "objectID": "getting-started/02-multiproc.html",
+    "href": "getting-started/02-multiproc.html",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "This tutorial shows how to use OpenPIV’s multiprocessing capabilities to analyze multiple image pairs in parallel.\n\n\nWhen analyzing movies or long sequences, you need to process many image pairs. Multiprocessing distributes the workload across multiple CPU cores, significantly reducing processing time.\n\n\n\nHere’s how to set up parallel processing:\n\nimport pathlib\nimport numpy as np\nfrom openpiv import tools, scaling, pyprocess, validation, filters\n\n# Define a worker function for processing each image pair\ndef process_pair(args):\n    \"\"\"Process a single image pair.\"\"\"\n    file_a, file_b, output_idx = args\n    \n    # Read images - try repo-relative paths\n    for _base in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n        if (_base / file_a).exists():\n            img_a = tools.imread(_base / file_a)\n            img_b = tools.imread(_base / file_b)\n            break\n    else:\n        img_a = tools.imread(pathlib.Path(\"../data/test1\") / file_a)\n        img_b = tools.imread(pathlib.Path(\"../data/test1\") / file_b)\n    \n    # Convert to int32 for processing\n    img_a = (img_a * 1024).astype(np.int32)\n    img_b = (img_b * 1024).astype(np.int32)\n    \n    # Run PIV analysis\n    u, v, sig2noise = pyprocess.extended_search_area_piv(\n        img_a, img_b,\n        window_size=32,\n        overlap=16,\n        dt=0.02,\n        search_area_size=38,\n        sig2noise_method='peak2peak',\n        backend='scipy',  # OpenPIV 0.26.0: 'scipy' (default, scipy.fft) | 'rust' | 'auto'\n    )\n    \n    # Validate\n    mask = validation.sig2noise_val(sig2noise, threshold=1.5)\n    \n    # Get coordinates\n    x, y = pyprocess.get_coordinates(\n        image_size=img_a.shape,\n        search_area_size=38,\n        overlap=16\n    )\n    \n    return x, y, u, v, mask\n\nprint(\"Worker function defined for parallel processing\")\n\nWorker function defined for parallel processing\n\n\n\n\n\nOpenPIV provides a convenient class for managing parallel processing:\n\n# Check available test files\nimport os\nfor _cand in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n    if _cand.exists():\n        test_path = _cand\n        break\nelse:\n    test_path = pathlib.Path(\"../data/test1\")\nfiles = list(test_path.glob(\"*.bmp\"))\nprint(f\"Available test images: {len(files)}\")\nfor f in sorted(files):\n    print(f\"  - {f.name}\")\n\nAvailable test images: 2\n  - exp1_001_a.bmp\n  - exp1_001_b.bmp\n\n\n\n\n\nMultiprocessing is essential for: - Analyzing long image sequences - Processing high-resolution images - Reducing overall processing time\n\n\n\nTry the Multipass PIV tutorial to learn about iterative refinement for improved accuracy.\n\nOpenPIV 0.26.0 tip: for batch runs use PIVSettings(backend=\"auto\") — it will pick Rust when openpiv-rust is installed, otherwise scipy.fft. Set n_cpus in settings for multiprocessing."
+  },
+  {
+    "objectID": "getting-started/02-multiproc.html#why-multiprocessing",
+    "href": "getting-started/02-multiproc.html#why-multiprocessing",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "When analyzing movies or long sequences, you need to process many image pairs. Multiprocessing distributes the workload across multiple CPU cores, significantly reducing processing time."
+  },
+  {
+    "objectID": "getting-started/02-multiproc.html#code-example",
+    "href": "getting-started/02-multiproc.html#code-example",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "Here’s how to set up parallel processing:\n\nimport pathlib\nimport numpy as np\nfrom openpiv import tools, scaling, pyprocess, validation, filters\n\n# Define a worker function for processing each image pair\ndef process_pair(args):\n    \"\"\"Process a single image pair.\"\"\"\n    file_a, file_b, output_idx = args\n    \n    # Read images - try repo-relative paths\n    for _base in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n        if (_base / file_a).exists():\n            img_a = tools.imread(_base / file_a)\n            img_b = tools.imread(_base / file_b)\n            break\n    else:\n        img_a = tools.imread(pathlib.Path(\"../data/test1\") / file_a)\n        img_b = tools.imread(pathlib.Path(\"../data/test1\") / file_b)\n    \n    # Convert to int32 for processing\n    img_a = (img_a * 1024).astype(np.int32)\n    img_b = (img_b * 1024).astype(np.int32)\n    \n    # Run PIV analysis\n    u, v, sig2noise = pyprocess.extended_search_area_piv(\n        img_a, img_b,\n        window_size=32,\n        overlap=16,\n        dt=0.02,\n        search_area_size=38,\n        sig2noise_method='peak2peak',\n        backend='scipy',  # OpenPIV 0.26.0: 'scipy' (default, scipy.fft) | 'rust' | 'auto'\n    )\n    \n    # Validate\n    mask = validation.sig2noise_val(sig2noise, threshold=1.5)\n    \n    # Get coordinates\n    x, y = pyprocess.get_coordinates(\n        image_size=img_a.shape,\n        search_area_size=38,\n        overlap=16\n    )\n    \n    return x, y, u, v, mask\n\nprint(\"Worker function defined for parallel processing\")\n\nWorker function defined for parallel processing"
+  },
+  {
+    "objectID": "getting-started/02-multiproc.html#using-the-multiprocesser",
+    "href": "getting-started/02-multiproc.html#using-the-multiprocesser",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "OpenPIV provides a convenient class for managing parallel processing:\n\n# Check available test files\nimport os\nfor _cand in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n    if _cand.exists():\n        test_path = _cand\n        break\nelse:\n    test_path = pathlib.Path(\"../data/test1\")\nfiles = list(test_path.glob(\"*.bmp\"))\nprint(f\"Available test images: {len(files)}\")\nfor f in sorted(files):\n    print(f\"  - {f.name}\")\n\nAvailable test images: 2\n  - exp1_001_a.bmp\n  - exp1_001_b.bmp"
+  },
+  {
+    "objectID": "getting-started/02-multiproc.html#summary",
+    "href": "getting-started/02-multiproc.html#summary",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "Multiprocessing is essential for: - Analyzing long image sequences - Processing high-resolution images - Reducing overall processing time"
+  },
+  {
+    "objectID": "getting-started/02-multiproc.html#next-steps",
+    "href": "getting-started/02-multiproc.html#next-steps",
+    "title": "Multiprocessing for Speed",
+    "section": "",
+    "text": "Try the Multipass PIV tutorial to learn about iterative refinement for improved accuracy.\n\nOpenPIV 0.26.0 tip: for batch runs use PIVSettings(backend=\"auto\") — it will pick Rust when openpiv-rust is installed, otherwise scipy.fft. Set n_cpus in settings for multiprocessing."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "OpenPIV Tutorials",
+    "section": "",
+    "text": "Interactive tutorials for learning Particle Image Velocimetry (PIV) using OpenPIV Python library.\n\n\nThese tutorials are organized by difficulty level, from basics to advanced techniques.\n\n\n\nFirst PIV Analysis - Learn the fundamentals of PIV analysis\nMultiprocessing - Speed up processing with multiple cores\n\n\n\n\n\n\n\n\nDataset\nDescription\nApplication\n\n\n\n\ntest1\nSimple two-image PIV\nBasic analysis\n\n\ntest20\nMultiple image pairs\nMultipass processing\n\n\ntest3\nVon Karman vortex street\nAdvanced validation\n\n\n\n\n\n\n\n\nTo run interactive notebooks with marimo:\n# Install marimo\npip install marimo\n\n# Run a notebook interactively\nmarimo run ../marimo/tutorial1.py\n\n\n\nThis website shows pre-rendered output from tutorials. Each page displays:\n\nCode cells with explanations\nExecuted results\nInteractive visualizations\n\n\n\n\nDownload the .py marimo files from the marimo/ folder in the main repository and run locally.\n\n\n\n\nTest data is included in the data/ folder: - test1/ - Basic PIV test images - test20/ - Multiple image pairs for multipass",
+    "crumbs": [
+      "OpenPIV Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#getting-started",
+    "href": "index.html#getting-started",
+    "title": "OpenPIV Tutorials",
+    "section": "",
+    "text": "These tutorials are organized by difficulty level, from basics to advanced techniques.\n\n\n\nFirst PIV Analysis - Learn the fundamentals of PIV analysis\nMultiprocessing - Speed up processing with multiple cores",
+    "crumbs": [
+      "OpenPIV Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#featured-test-cases",
+    "href": "index.html#featured-test-cases",
+    "title": "OpenPIV Tutorials",
+    "section": "",
+    "text": "Dataset\nDescription\nApplication\n\n\n\n\ntest1\nSimple two-image PIV\nBasic analysis\n\n\ntest20\nMultiple image pairs\nMultipass processing\n\n\ntest3\nVon Karman vortex street\nAdvanced validation",
+    "crumbs": [
+      "OpenPIV Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#running-the-tutorials",
+    "href": "index.html#running-the-tutorials",
+    "title": "OpenPIV Tutorials",
+    "section": "",
+    "text": "To run interactive notebooks with marimo:\n# Install marimo\npip install marimo\n\n# Run a notebook interactively\nmarimo run ../marimo/tutorial1.py\n\n\n\nThis website shows pre-rendered output from tutorials. Each page displays:\n\nCode cells with explanations\nExecuted results\nInteractive visualizations\n\n\n\n\nDownload the .py marimo files from the marimo/ folder in the main repository and run locally.",
+    "crumbs": [
+      "OpenPIV Tutorials"
+    ]
+  },
+  {
+    "objectID": "index.html#data",
+    "href": "index.html#data",
+    "title": "OpenPIV Tutorials",
+    "section": "",
+    "text": "Test data is included in the data/ folder: - test1/ - Basic PIV test images - test20/ - Multiple image pairs for multipass",
+    "crumbs": [
+      "OpenPIV Tutorials"
+    ]
+  },
+  {
     "objectID": "marimo-demo/example.html",
     "href": "marimo-demo/example.html",
     "title": "Marimo Interactive Example",
@@ -226,5 +191,40 @@
     "title": "Marimo Interactive Example",
     "section": "",
     "text": "#| echo: true\nimport marimo as mo\n\n# Create multiple interconnected controls\nslider_a = mo.ui.slider(0, 10, 2, label=\"Amplitude\")\nslider_f = mo.ui.slider(0.1, 5, 1, label=\"Frequency\")\ndropdown = mo.ui.dropdown(['sin', 'cos', 'tan'], label='Function', value='sin')\n\nmo.hstack([slider_a, slider_f, dropdown])\n#| echo: true\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Create plot based on multiple controls\nx = np.linspace(0, 4*np.pi, 200)\n\n# Select function based on dropdown\nif dropdown.value == 'sin':\n    y = slider_a.value * np.sin(slider_f.value * x)\nelif dropdown.value == 'cos':\n    y = slider_a.value * np.cos(slider_f.value * x)\nelse:  # tan\n    y = slider_a.value * np.tan(slider_f.value * x)\n    # Limit extreme values for better visualization\n    y = np.clip(y, -10, 10)\n\n# Create the plot\nfig, ax = plt.subplots(figsize=(10, 6))\nax.plot(x, y, 'r-', linewidth=2)\nax.set_xlabel('X')\nax.set_ylabel('Y')\nax.set_title(f'{dropdown.value.capitalize()} Wave (A={slider_a.value}, f={slider_f.value})')\nax.grid(True, alpha=0.3)\nplt.tight_layout()\n\nfig"
+  },
+  {
+    "objectID": "getting-started/01-first-piv.html",
+    "href": "getting-started/01-first-piv.html",
+    "title": "First PIV Analysis",
+    "section": "",
+    "text": "This tutorial demonstrates the basics of Particle Image Velocimetry (PIV) analysis using OpenPIV. You’ll learn how to: - Load image pairs - Apply the PIV correlation algorithm - Validate and filter results - Visualize velocity fields\n\n\nPIV is a non-intrusive flow measurement technique that calculates velocity fields from pairs of images captured at short time intervals. Particles seeded in the flow are tracked between two laser pulses, and their displacement provides velocity information.\n\n\n\nLet’s start by loading the test images and visualizing them:\n\nimport pathlib\nfrom openpiv import tools, pyprocess, validation, filters, scaling\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Load the test images - portable path (works both locally and in CI)\n# data/ lives at repo root; openpiv-tutorials/ is one level below\nfor _p in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n    if (_p / \"exp1_001_a.bmp\").exists():\n        data_path = _p\n        break\nelse:\n    data_path = pathlib.Path(\"../data/test1\")\nframe_a = tools.imread(str(data_path / \"exp1_001_a.bmp\"))\nframe_b = tools.imread(str(data_path / \"exp1_001_b.bmp\"))\n\n# Display both frames\nfig, axes = plt.subplots(1, 2, figsize=(12, 8))\naxes[0].imshow(frame_a, cmap=plt.cm.gray)\naxes[0].set_title(\"Frame A (t)\")\naxes[1].imshow(frame_b, cmap=plt.cm.gray)\naxes[1].set_title(\"Frame B (t+dt)\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nNow let’s apply the PIV algorithm to find the displacement:\n\n# Define PIV parameters\nwinsize = 32      # interrogation window size in pixels\nsearchsize = 38    # search area size in pixels  \noverlap = 12       # overlap between windows (50%)\ndt = 0.02        # time between pulses (seconds)\n\n# Run the PIV analysis\nu0, v0, sig2noise = pyprocess.extended_search_area_piv(\n    frame_a.astype(np.int32),\n    frame_b.astype(np.int32),\n    window_size=winsize,\n    overlap=overlap,\n    dt=dt,\n    search_area_size=searchsize,\n    sig2noise_method=\"peak2peak\",\n)\n\n# Get the coordinate grid\nx, y = pyprocess.get_coordinates(\n    image_size=frame_a.shape, \n    search_area_size=searchsize, \n    overlap=overlap\n)\n\nprint(f\"Velocity field shape: {u0.shape}\")\nprint(f\"Number of vectors: {u0.size}\")\nprint(f\"Signal-to-noise ratio range: {sig2noise.min():.2f} - {sig2noise.max():.2f}\")\n\nVelocity field shape: (13, 19)\nNumber of vectors: 247\nSignal-to-noise ratio range: 1.58 - 4.87\n\n\n\nOpenPIV 0.26.0: scipy.fft is now the default FFT backend (2–3× faster than numpy.fft). Install the optional Rust extension with pip install openpiv[rust] and select via backend=\"scipy\" | \"rust\" | \"auto\".\n\nBenchmark the scipy.fft vs optional Rust backend (0.26.0):\n\nimport importlib.metadata, time\nprint(\"openpiv\", importlib.metadata.version(\"openpiv\"))\nprint(\"HAS_RUST =\", getattr(pyprocess, \"HAS_RUST\", False))\n# Explicit backend selection — auto prefers Rust if installed\nfor backend in ([\"scipy\", \"rust\"] if getattr(pyprocess, \"HAS_RUST\", False) else [\"scipy\"]):\n    t0 = time.time()\n    u, v, _ = pyprocess.extended_search_area_piv(frame_a.astype(np.int32), frame_b.astype(np.int32), window_size=winsize, overlap=overlap, dt=dt, search_area_size=searchsize, sig2noise_method=\"peak2peak\", backend=backend)\n    print(f\"{backend:5s}: {time.time()-t0:.3f}s  mean u={u.mean():.2f}\")\n\nopenpiv 0.26.0\nHAS_RUST = False\nscipy: 0.026s  mean u=-4.83\n\n\nValidate the results using signal-to-noise ratio:\n\n# Validate using signal-to-noise ratio\nflags = validation.sig2noise_val(sig2noise, threshold=1.05)\n\n# Replace outliers\nu2, v2 = filters.replace_outliers(\n    u0, v0, flags, method=\"localmean\", max_iter=3, kernel_size=3\n)\n\n# Convert to physical units\nx_1, y_1, u3, v3 = scaling.uniform(x, y, u2, v2, scaling_factor=96.52)\nx_1, y_1, u3, v3 = tools.transform_coordinates(x_1, y_1, u3, v3)\n\nprint(f\"Validated vectors: {flags.sum()} / {flags.size}\")\nprint(f\"Velocity range U: {u3.min():.2f} to {u3.max():.2f} pix/s\")\nprint(f\"Velocity range V: {v3.min():.2f} to {v3.max():.2f} pix/s\")\n\nValidated vectors: 0 / 247\nVelocity range U: -0.78 to 0.88 pix/s\nVelocity range V: -3.43 to -2.15 pix/s\n\n\nVisualize the velocity field:\n\n# Display the vector field using quiver plot\nfig, ax = plt.subplots(figsize=(10, 8))\nQ = ax.quiver(x_1, y_1, u3, -v3, sig2noise, scale=50, pivot='middle')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title(\"OpenPIV First Analysis - Velocity Field\")\nax.set_xlim(0, frame_a.shape[1])\nax.set_ylim(frame_a.shape[0], 0)\nplt.colorbar(Q, label='Signal-to-Noise Ratio')\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\n\n\n\nIn this tutorial you: 1. Loaded image pairs using OpenPIV tools 2. Applied the extended search area PIV algorithm 3. Validated results with signal-to-noise ratio filtering 4. Replaced outlier vectors using local mean filtering 5. Visualized the velocity field\n\n\n\n\nTry the Multiprocessing tutorial to speed up analysis\nExperiment with different window sizes"
+  },
+  {
+    "objectID": "getting-started/01-first-piv.html#theory",
+    "href": "getting-started/01-first-piv.html#theory",
+    "title": "First PIV Analysis",
+    "section": "",
+    "text": "PIV is a non-intrusive flow measurement technique that calculates velocity fields from pairs of images captured at short time intervals. Particles seeded in the flow are tracked between two laser pulses, and their displacement provides velocity information."
+  },
+  {
+    "objectID": "getting-started/01-first-piv.html#code-example",
+    "href": "getting-started/01-first-piv.html#code-example",
+    "title": "First PIV Analysis",
+    "section": "",
+    "text": "Let’s start by loading the test images and visualizing them:\n\nimport pathlib\nfrom openpiv import tools, pyprocess, validation, filters, scaling\nimport numpy as np\nimport matplotlib.pyplot as plt\n\n# Load the test images - portable path (works both locally and in CI)\n# data/ lives at repo root; openpiv-tutorials/ is one level below\nfor _p in [pathlib.Path(\"../data/test1\"), pathlib.Path(\"data/test1\"), pathlib.Path(\"../../data/test1\")]:\n    if (_p / \"exp1_001_a.bmp\").exists():\n        data_path = _p\n        break\nelse:\n    data_path = pathlib.Path(\"../data/test1\")\nframe_a = tools.imread(str(data_path / \"exp1_001_a.bmp\"))\nframe_b = tools.imread(str(data_path / \"exp1_001_b.bmp\"))\n\n# Display both frames\nfig, axes = plt.subplots(1, 2, figsize=(12, 8))\naxes[0].imshow(frame_a, cmap=plt.cm.gray)\naxes[0].set_title(\"Frame A (t)\")\naxes[1].imshow(frame_b, cmap=plt.cm.gray)\naxes[1].set_title(\"Frame B (t+dt)\")\nplt.tight_layout()\nplt.show()\n\n\n\n\n\n\n\n\nNow let’s apply the PIV algorithm to find the displacement:\n\n# Define PIV parameters\nwinsize = 32      # interrogation window size in pixels\nsearchsize = 38    # search area size in pixels  \noverlap = 12       # overlap between windows (50%)\ndt = 0.02        # time between pulses (seconds)\n\n# Run the PIV analysis\nu0, v0, sig2noise = pyprocess.extended_search_area_piv(\n    frame_a.astype(np.int32),\n    frame_b.astype(np.int32),\n    window_size=winsize,\n    overlap=overlap,\n    dt=dt,\n    search_area_size=searchsize,\n    sig2noise_method=\"peak2peak\",\n)\n\n# Get the coordinate grid\nx, y = pyprocess.get_coordinates(\n    image_size=frame_a.shape, \n    search_area_size=searchsize, \n    overlap=overlap\n)\n\nprint(f\"Velocity field shape: {u0.shape}\")\nprint(f\"Number of vectors: {u0.size}\")\nprint(f\"Signal-to-noise ratio range: {sig2noise.min():.2f} - {sig2noise.max():.2f}\")\n\nVelocity field shape: (13, 19)\nNumber of vectors: 247\nSignal-to-noise ratio range: 1.58 - 4.87\n\n\n\nOpenPIV 0.26.0: scipy.fft is now the default FFT backend (2–3× faster than numpy.fft). Install the optional Rust extension with pip install openpiv[rust] and select via backend=\"scipy\" | \"rust\" | \"auto\".\n\nBenchmark the scipy.fft vs optional Rust backend (0.26.0):\n\nimport importlib.metadata, time\nprint(\"openpiv\", importlib.metadata.version(\"openpiv\"))\nprint(\"HAS_RUST =\", getattr(pyprocess, \"HAS_RUST\", False))\n# Explicit backend selection — auto prefers Rust if installed\nfor backend in ([\"scipy\", \"rust\"] if getattr(pyprocess, \"HAS_RUST\", False) else [\"scipy\"]):\n    t0 = time.time()\n    u, v, _ = pyprocess.extended_search_area_piv(frame_a.astype(np.int32), frame_b.astype(np.int32), window_size=winsize, overlap=overlap, dt=dt, search_area_size=searchsize, sig2noise_method=\"peak2peak\", backend=backend)\n    print(f\"{backend:5s}: {time.time()-t0:.3f}s  mean u={u.mean():.2f}\")\n\nopenpiv 0.26.0\nHAS_RUST = False\nscipy: 0.026s  mean u=-4.83\n\n\nValidate the results using signal-to-noise ratio:\n\n# Validate using signal-to-noise ratio\nflags = validation.sig2noise_val(sig2noise, threshold=1.05)\n\n# Replace outliers\nu2, v2 = filters.replace_outliers(\n    u0, v0, flags, method=\"localmean\", max_iter=3, kernel_size=3\n)\n\n# Convert to physical units\nx_1, y_1, u3, v3 = scaling.uniform(x, y, u2, v2, scaling_factor=96.52)\nx_1, y_1, u3, v3 = tools.transform_coordinates(x_1, y_1, u3, v3)\n\nprint(f\"Validated vectors: {flags.sum()} / {flags.size}\")\nprint(f\"Velocity range U: {u3.min():.2f} to {u3.max():.2f} pix/s\")\nprint(f\"Velocity range V: {v3.min():.2f} to {v3.max():.2f} pix/s\")\n\nValidated vectors: 0 / 247\nVelocity range U: -0.78 to 0.88 pix/s\nVelocity range V: -3.43 to -2.15 pix/s\n\n\nVisualize the velocity field:\n\n# Display the vector field using quiver plot\nfig, ax = plt.subplots(figsize=(10, 8))\nQ = ax.quiver(x_1, y_1, u3, -v3, sig2noise, scale=50, pivot='middle')\nax.set_aspect('equal')\nax.invert_yaxis()\nax.set_xlabel('X (pixels)')\nax.set_ylabel('Y (pixels)')\nax.set_title(\"OpenPIV First Analysis - Velocity Field\")\nax.set_xlim(0, frame_a.shape[1])\nax.set_ylim(frame_a.shape[0], 0)\nplt.colorbar(Q, label='Signal-to-Noise Ratio')\nplt.tight_layout()\nplt.show()"
+  },
+  {
+    "objectID": "getting-started/01-first-piv.html#summary",
+    "href": "getting-started/01-first-piv.html#summary",
+    "title": "First PIV Analysis",
+    "section": "",
+    "text": "In this tutorial you: 1. Loaded image pairs using OpenPIV tools 2. Applied the extended search area PIV algorithm 3. Validated results with signal-to-noise ratio filtering 4. Replaced outlier vectors using local mean filtering 5. Visualized the velocity field"
+  },
+  {
+    "objectID": "getting-started/01-first-piv.html#next-steps",
+    "href": "getting-started/01-first-piv.html#next-steps",
+    "title": "First PIV Analysis",
+    "section": "",
+    "text": "Try the Multiprocessing tutorial to speed up analysis\nExperiment with different window sizes"
   }
 ]

@@ -76,7 +76,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-4a1c58d262a24fd82705d9e365d43e90.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3e110284a13d48d4adc39ad07851e26f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -195,11 +195,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="first-piv-analysis---interactive" class="level1">
 <h1>First PIV Analysis - Interactive</h1>
+<blockquote class="blockquote">
+<p>Requires <code>openpiv&gt;=0.26.0</code>. New: <code>scipy.fft</code> default and optional Rust via <code>backend="rust"</code>.</p>
+</blockquote>
 <p>This interactive tutorial provides an introduction to Particle Image Velocimetry (PIV) analysis. The code cells below are interactive - you can edit and run them in your browser!</p>
 <section id="interrogation-window-parameters" class="level2">
 <h2 class="anchored" data-anchor-id="interrogation-window-parameters">Interrogation Window Parameters</h2>
 <p>Try adjusting the parameters and running the code:</p>
-<div id="36d38520" class="cell" data-editor="true">
+<div id="4bf4cb54" class="cell" data-editor="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Define PIV parameters</span></span>
@@ -217,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="calculate-number-of-vectors" class="level2">
 <h2 class="anchored" data-anchor-id="calculate-number-of-vectors">Calculate Number of Vectors</h2>
 <p>Modify the image size and calculate the number of interrogation windows:</p>
-<div id="18df7487" class="cell" data-editor="true">
+<div id="cb85d8b4" class="cell" data-editor="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>image_size <span class="op">=</span> <span class="dv">256</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n_windows_x <span class="op">=</span> (image_size <span class="op">-</span> searchsize) <span class="op">//</span> overlap <span class="op">+</span> <span class="dv">1</span></span>
@@ -232,7 +235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="velocity-calculation" class="level2">
 <h2 class="anchored" data-anchor-id="velocity-calculation">Velocity Calculation</h2>
 <p>Try changing the displacement values:</p>
-<div id="fb93d4f9" class="cell" data-editor="true">
+<div id="df42938d" class="cell" data-editor="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dx <span class="op">=</span> <span class="fl">5.2</span>   <span class="co"># Try changing this value!</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dy <span class="op">=</span> <span class="op">-</span><span class="fl">3.7</span>  <span class="co"># Try changing this value!</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -250,7 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="signal-to-noise-validation" class="level2">
 <h2 class="anchored" data-anchor-id="signal-to-noise-validation">Signal-to-Noise Validation</h2>
-<div id="afef8807" class="cell" data-editor="true">
+<div id="33e02cd6" class="cell" data-editor="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>snr_values <span class="op">=</span> np.random.uniform(<span class="fl">1.0</span>, <span class="fl">5.0</span>, <span class="dv">100</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="fl">1.05</span></span>
@@ -266,7 +269,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="interactive-plot" class="level2">
 <h2 class="anchored" data-anchor-id="interactive-plot">Interactive Plot</h2>
 <p>Create a velocity field visualization:</p>
-<div id="f7ec2f48" class="cell" data-editor="true">
+<div id="58f6d0c7" class="cell" data-editor="true">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">256</span>, <span class="dv">20</span>)</span>
