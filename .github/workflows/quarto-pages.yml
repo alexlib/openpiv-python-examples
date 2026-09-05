@@ -46,10 +46,13 @@ jobs:
         run: |
           ruff check openpiv-tutorials/
 
-      - name: Render and Publish
-        uses: quarto-dev/quarto-actions/publish@v2
+      - name: Render site
+        run: |
+          quarto render openpiv-tutorials
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          target: gh-pages
-          path: openpiv-tutorials
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: openpiv-tutorials/docs
