@@ -39,5 +39,8 @@ select = ["E", "F", "B", "I"]
 # Specific rules to ignore (if any)
 ignore = []
 
+[tool.setuptools.packages.find]
+exclude = ["data", "data.*", "marimo", "marimo.*", "notebooks", "notebooks.*", "output_3D_test", "output_3D_test.*", "openpiv-tutorials", "openpiv-tutorials.*"]
+
 [tool.marimo]
 # Optional Marimo configuration can be added here
