@@ -27,15 +27,21 @@ def process_pair(args):
     """Process a single image pair."""
     file_a, file_b, output_idx = args
     
-    # Read images
-    img_a = tools.imread(pathlib.Path("data/test1") / file_a)
-    img_b = tools.imread(pathlib.Path("data/test1") / file_b)
+    # Read images - try repo-relative paths
+    for _base in [pathlib.Path("../data/test1"), pathlib.Path("data/test1"), pathlib.Path("../../data/test1")]:
+        if (_base / file_a).exists():
+            img_a = tools.imread(_base / file_a)
+            img_b = tools.imread(_base / file_b)
+            break
+    else:
+        img_a = tools.imread(pathlib.Path("../data/test1") / file_a)
+        img_b = tools.imread(pathlib.Path("../data/test1") / file_b)
     
     # Convert to int32 for processing
     img_a = (img_a * 1024).astype(np.int32)
     img_b = (img_b * 1024).astype(np.int32)
     
-    # Run PIV analysis (0.26.0: scipy.fft default; backend="scipy"|"rust"|"auto")
+    # Run PIV analysis
     u, v, sig2noise = pyprocess.extended_search_area_piv(
         img_a, img_b,
         window_size=32,
@@ -43,7 +49,7 @@ def process_pair(args):
         dt=0.02,
         search_area_size=38,
         sig2noise_method='peak2peak',
-        backend='scipy',  # or 'rust' / 'auto' with openpiv-rust
+        backend='scipy',  # OpenPIV 0.26.0: 'scipy' (default, scipy.fft) | 'rust' | 'auto'
     )
     
     # Validate
@@ -71,7 +77,12 @@ OpenPIV provides a convenient class for managing parallel processing:
 
 # Check available test files
 import os
-test_path = pathlib.Path("data/test1")
+for _cand in [pathlib.Path("../data/test1"), pathlib.Path("data/test1"), pathlib.Path("../../data/test1")]:
+    if _cand.exists():
+        test_path = _cand
+        break
+else:
+    test_path = pathlib.Path("../data/test1")
 files = list(test_path.glob("*.bmp"))
 print(f"Available test images: {len(files)}")
 for f in sorted(files):

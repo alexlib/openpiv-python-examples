@@ -6,6 +6,8 @@ execute:
 
 # First PIV Analysis - Interactive
 
+> Requires `openpiv>=0.26.0`. New: `scipy.fft` default and optional Rust via `backend="rust"`.
+
 This interactive tutorial provides an introduction to Particle Image Velocimetry (PIV) analysis. The code cells below are interactive - you can edit and run them in your browser!
 
 ## Interrogation Window Parameters
