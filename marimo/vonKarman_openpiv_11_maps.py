@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -20,6 +20,25 @@ def _():
     import marimo as mo
 
     return (mo,)
+
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""*
+Requires `openpiv>=0.26.0`. New in 0.26.0: `scipy.fft` default backend (2-3x faster) and optional `openpiv-rust` via `backend="rust"`/`"auto"`.
+*""")
+    return
 
 
 @app.cell(hide_code=True)
@@ -93,8 +112,8 @@ def _(windef):
 
     'Region of interest'
     # (50,300,50,300) #Region of interest: (xmin,xmax,ymin,ymax) or 'full' for full image
-    settings.ROI = 'full'
-    # settings.ROI = (200,400,500,900)
+    settings.roi = 'full'
+    # settings.roi = (200,400,500,900)
 
     # settings.deformation_method = 'symmetric' 
     settings.deformation_method = 'second image'
@@ -166,8 +185,8 @@ def _(windef):
 
 
 
-    settings.MinMax_U_disp = (-10, 10)
-    settings.MinMax_V_disp = (-10, 10)
+    settings.min_max_u_disp = (-10, 10)
+    settings.min_max_v_disp = (-10, 10)
 
     # The second filter is based on the global STD threshold
     settings.std_threshold = 5  # threshold of the std validation
@@ -232,6 +251,30 @@ def _(io):
     data.piv.quiver()
     return
 
+
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""### OpenPIV 0.26.0: `scipy.fft` and Rust backends in `windef`
+`PIVSettings(backend="scipy"|"rust"|"auto")` controls the FFT engine. `auto` (default) prefers Rust when installed.
+""")
+    return
+
+@app.cell
+def _(frame_a, frame_b, windef):
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    from openpiv.pyprocess import HAS_RUST
+    print("HAS_RUST =", HAS_RUST)
+    settings = windef.PIVSettings()
+    for backend in (["scipy", "rust"] if HAS_RUST else ["scipy"]):
+        settings.backend = backend
+        print(f"\\n--- backend={backend} ---")
+        from openpiv.pyprocess import extended_search_area_piv
+        u, v, s2n = extended_search_area_piv(frame_a, frame_b, window_size=settings.windowsizes[0], overlap=settings.overlap[0], sig2noise_method="peak2peak", backend=backend)
+        print(f"single-pass mean u={u.mean():.2f}, v={v.mean():.2f}")
+    return
 
 if __name__ == "__main__":
     app.run()

@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -255,8 +255,8 @@ def _(folder, os):
 @app.cell
 def _(folder, os):
     if not os.path.exists(folder):
-        raise FileNotFoundError("path to 3d piv data "%s" does not exist\n")
-                                ". Please download the data from https://github.com/fabrylab/3D_piv_example_data.git" % folder)
+        raise FileNotFoundError("path to 3d piv data '%s' does not exists\n"
+                            ". Please download the data from https://github.com/fabrylab/3D_piv_example_data.git" % folder)
     # stack properties
     # factors for voxel size
     du = 0.2407

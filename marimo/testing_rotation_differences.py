@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -13,6 +13,17 @@ import marimo
 
 __generated_with = "0.23.0"
 app = marimo.App()
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
 
 
 @app.cell
@@ -54,9 +65,9 @@ def _(windef):
 
     'Region of interest'
     # (50,300,50,300) #Region of interest: (xmin,xmax,ymin,ymax) or 'full' for full image
-    settings.ROI = 'full'
-    # settings.ROI = (200,400,500,900)
-    # settings.ROI = (200,212,500,512)
+    settings.roi = 'full'
+    # settings.roi = (200,400,500,900)
+    # settings.roi = (200,212,500,512)
 
     # settings.deformation_method = 'symmetric' 
     settings.deformation_method = 'second image'
@@ -131,8 +142,8 @@ def _(windef):
 
 
 
-    settings.MinMax_U_disp = (-10, 10)
-    settings.MinMax_V_disp = (-10, 10)
+    settings.min_max_u_disp = (-10, 10)
+    settings.min_max_v_disp = (-10, 10)
 
     # The second filter is based on the global STD threshold
     settings.std_threshold = 5  # threshold of the std validation

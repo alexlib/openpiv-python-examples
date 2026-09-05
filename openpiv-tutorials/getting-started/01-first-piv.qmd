@@ -48,7 +48,9 @@ Now let's apply the PIV algorithm to find the displacement:
 #| execute:
 #| kernel: python3
 
-# Define PIV parameters
+# Define PIV parameters (OpenPIV 0.26.0: `scipy.fft` is default; Rust optional)
+
+> **Requires `openpiv>=0.26.0`** — `scipy.fft` backend is now default (2-3x faster). For extra speed install the Rust extension `pip install openpiv[rust]` and use `backend="rust"` or `"auto"`.
 winsize = 32      # interrogation window size in pixels
 searchsize = 38    # search area size in pixels  
 overlap = 12       # overlap between windows (50%)
@@ -63,6 +65,7 @@ u0, v0, sig2noise = pyprocess.extended_search_area_piv(
     dt=dt,
     search_area_size=searchsize,
     sig2noise_method="peak2peak",
+    # backend="scipy"  # default since 0.26.0: scipy.fft; use "rust" or "auto" for Rust acceleration
 )
 
 # Get the coordinate grid
@@ -75,6 +78,22 @@ x, y = pyprocess.get_coordinates(
 print(f"Velocity field shape: {u0.shape}")
 print(f"Number of vectors: {u0.size}")
 print(f"Signal-to-noise ratio range: {sig2noise.min():.2f} - {sig2noise.max():.2f}")
+```
+
+Benchmark the `scipy.fft` vs optional Rust backend (0.26.0):
+
+```{python}
+#| execute:
+#| kernel: python3
+
+import importlib.metadata, time
+print("openpiv", importlib.metadata.version("openpiv"))
+print("HAS_RUST =", getattr(pyprocess, "HAS_RUST", False))
+# Explicit backend selection — auto prefers Rust if installed
+for backend in (["scipy", "rust"] if getattr(pyprocess, "HAS_RUST", False) else ["scipy"]):
+    t0 = time.time()
+    u, v, _ = pyprocess.extended_search_area_piv(frame_a.astype(np.int32), frame_b.astype(np.int32), window_size=winsize, overlap=overlap, dt=dt, search_area_size=searchsize, sig2noise_method="peak2peak", backend=backend)
+    print(f"{backend:5s}: {time.time()-t0:.3f}s  mean u={u.mean():.2f}")
 ```
 
 Validate the results using signal-to-noise ratio:

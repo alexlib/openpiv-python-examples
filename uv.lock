@@ -554,15 +554,6 @@ wheels = [
 ]
 
 [[package]]
-name = "importlib-resources"
-version = "6.5.2"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/cf/8c/f834fbf984f691b4f7ff60f50b514cc3de5cc08abfc3295564dd89c5e2e7/importlib_resources-6.5.2.tar.gz", hash = "sha256:185f87adef5bcc288449d98fb4fba07cea78bc036455dd44c5fc4a2fe78fed2c", size = 44693, upload-time = "2025-01-03T18:51:56.698Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/ed/1f1afb2e9e7f38a545d628f864d562a5ae64fe6f7a10e28ffb9b185b4e89/importlib_resources-6.5.2-py3-none-any.whl", hash = "sha256:789cfdc3ed28c78b67a06acb8126751ced69a3d5f79c095a98298cd8a760ccec", size = 37461, upload-time = "2025-01-03T18:51:54.306Z" },
-]
-
-[[package]]
 name = "iniconfig"
 version = "2.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1542,11 +1533,10 @@ wheels = [
 
 [[package]]
 name = "openpiv"
-version = "0.25.1"
+version = "0.26.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "imageio" },
-    { name = "importlib-resources" },
     { name = "matplotlib" },
     { name = "natsort" },
     { name = "numpy" },
@@ -1554,10 +1544,9 @@ dependencies = [
     { name = "scipy" },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/72/99dae5379e7a9036bc3367b119d15d026fde3dffb664d28668784c80b092/OpenPIV-0.25.1.tar.gz", hash = "sha256:373b3bf36342c19953a1094c2e06df518a816a7f7fd0cd817328e755eda27a6b", size = 37542154, upload-time = "2023-10-01T18:01:53.644Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/89/41bb2cc3d2e26ade0b2146d409bad5bf6ef8c94e394ba421e8932a718435/openpiv-0.26.0.tar.gz", hash = "sha256:1b3d3781981d2e1b44730167a1bb3066726a903a5342bcf89bdfe98459cdb519", size = 41141088, upload-time = "2026-09-05T10:29:02.732Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/03/5f/545e6fe897d5d9c5e3b4e5b4de6cd474b189bc5d71641720ed665287154f/OpenPIV-0.25.1-py3-none-any.whl", hash = "sha256:42d567b44516024c75bc4dbd2f6a005d9ade2ea9626d1f0a0439ef6fc5c76e07", size = 37759819, upload-time = "2023-10-01T18:01:42.446Z" },
-    { url = "https://files.pythonhosted.org/packages/e9/c8/b96644bcff8066a1a20431609de0b49789514ddd19faa78b4a32a25e8162/openpiv-0.25.1-py3-none-any.whl", hash = "sha256:d80eaef7c1266c664781be06f07b89e7497fec1f3a7ffb92b947ab49e3528195", size = 38134473, upload-time = "2024-03-07T21:24:51.305Z" },
+    { url = "https://files.pythonhosted.org/packages/12/8b/99b0100d096795bf93fdb6f6480a1ca6362697d173cfb50358bd6a6c3369/openpiv-0.26.0-py3-none-any.whl", hash = "sha256:8207b65915989e7de412028cd9dcf162b1a9f215d38c3e7565ab1c87f18dd152", size = 41379524, upload-time = "2026-09-05T10:28:43.012Z" },
 ]
 
 [[package]]
@@ -1585,7 +1574,7 @@ requires-dist = [
     { name = "marimo", specifier = ">=0.23.1" },
     { name = "nbconvert", specifier = ">=7.16.6" },
     { name = "opencv-python-headless", specifier = ">=4.12.0.88" },
-    { name = "openpiv", specifier = ">=0.25.1" },
+    { name = "openpiv", specifier = ">=0.26.0" },
     { name = "pivpy", specifier = ">=0.0.20" },
     { name = "pytube", specifier = ">=15.0.0" },
     { name = "ruff", specifier = ">=0.15.10" },

@@ -35,14 +35,15 @@ def process_pair(args):
     img_a = (img_a * 1024).astype(np.int32)
     img_b = (img_b * 1024).astype(np.int32)
     
-    # Run PIV analysis
+    # Run PIV analysis (0.26.0: scipy.fft default; backend="scipy"|"rust"|"auto")
     u, v, sig2noise = pyprocess.extended_search_area_piv(
         img_a, img_b,
         window_size=32,
         overlap=16,
         dt=0.02,
         search_area_size=38,
-        sig2noise_method='peak2peak'
+        sig2noise_method='peak2peak',
+        backend='scipy',  # or 'rust' / 'auto' with openpiv-rust
     )
     
     # Validate
@@ -87,3 +88,5 @@ Multiprocessing is essential for:
 ## Next Steps
 
 Try the [Multipass PIV tutorial](03-multipass.qmd) to learn about iterative refinement for improved accuracy.
+
+> **OpenPIV 0.26.0 tip:** for batch runs use `PIVSettings(backend="auto")` — it will pick Rust when `openpiv-rust` is installed, otherwise `scipy.fft`. Set `n_cpus` in settings for multiprocessing.

@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -13,6 +13,17 @@ import marimo
 
 __generated_with = "0.23.0"
 app = marimo.App()
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
 
 
 @app.cell
@@ -130,6 +141,24 @@ def _(tools):
     )
     return
 
+
+
+@app.cell
+def _(frame_a, frame_b, pyprocess):
+    # OpenPIV 0.26.0: scipy.fft is now the default backend (2-3x faster than numpy.fft)
+    # Optional Rust backend (openpiv-rust) provides multithreaded acceleration
+    # Install with: pip install openpiv[rust]
+    import time
+    print("Rust available:", pyprocess.HAS_RUST)
+    winsize, searchsize, overlap, dt = 32, 38, 12, 0.02
+    for backend in (["scipy", "rust"] if pyprocess.HAS_RUST else ["scipy"]):
+        t0 = time.time()
+        try:
+            u_b, v_b, s2n_b = pyprocess.extended_search_area_piv(frame_a, frame_b, window_size=winsize, overlap=overlap, dt=dt, search_area_size=searchsize, sig2noise_method="peak2peak", backend=backend)
+            print(f"{backend:5s}: {time.time()-t0:.3f}s  mean u={u_b.mean():.3f} v={v_b.mean():.3f}")
+        except Exception as e:
+            print(backend, "failed:", e)
+    return
 
 if __name__ == "__main__":
     app.run()

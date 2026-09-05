@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -20,6 +20,25 @@ def _():
     import marimo as mo
 
     return (mo,)
+
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""*
+Requires `openpiv>=0.26.0`. New in 0.26.0: `scipy.fft` default backend (2-3x faster) and optional `openpiv-rust` via `backend="rust"`/`"auto"`.
+*""")
+    return
 
 
 @app.cell(hide_code=True)
@@ -96,8 +115,8 @@ def _(windef):
 
     'Region of interest'
     # (50,300,50,300) #Region of interest: (xmin,xmax,ymin,ymax) or 'full' for full image
-    settings.ROI = 'full'
-    # settings.ROI = (200,400,600,850)
+    settings.roi = 'full'
+    # settings.roi = (200,400,600,850)
 
 
 
@@ -163,8 +182,8 @@ def _(windef):
 
     settings.replace_vectors = True
 
-    settings.MinMax_U_disp = (-5, 5)
-    settings.MinMax_V_disp = (-5, 5)
+    settings.min_max_u_disp = (-5, 5)
+    settings.min_max_v_disp = (-5, 5)
 
     # The second filter is based on the global STD threshold
     settings.std_threshold = 3  # threshold of the std validation
@@ -205,16 +224,16 @@ def _(os, settings, tools):
     frame_b = tools.imread(os.path.join(settings.filepath_images, file_b))
 
     # " crop to ROI"
-    if settings.ROI == "full":
+    if settings.roi == "full":
         pass
     else:
         frame_a = frame_a[
-            settings.ROI[0]:settings.ROI[1],
-            settings.ROI[2]:settings.ROI[3]
+            settings.roi[0]:settings.roi[1],
+            settings.roi[2]:settings.roi[3]
         ]
         frame_b = frame_b[
-            settings.ROI[0]:settings.ROI[1],
-            settings.ROI[2]:settings.ROI[3]
+            settings.roi[0]:settings.roi[1],
+            settings.roi[2]:settings.roi[3]
         ]
     return frame_a, frame_b
 
@@ -416,7 +435,7 @@ def _(settings, status_message, u_1, v_1, validation):
     # The validation is done at each iteration based on three filters.
     # The first filter is based on the min/max ranges. Observe that these values are defined in
     # terms of minimum and maximum displacement in pixel/frames.
-    mask_g = validation.global_val(u_1, v_1, settings.MinMax_U_disp, settings.MinMax_V_disp)
+    mask_g = validation.global_val(u_1, v_1, settings.min_max_u_disp, settings.min_max_v_disp)
     status_message(u_1)
     return (mask_g,)
 

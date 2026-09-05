@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -20,6 +20,25 @@ def _():
     import marimo as mo
 
     return (mo,)
+
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""*
+Requires `openpiv>=0.26.0`. New in 0.26.0: `scipy.fft` default backend (2-3x faster) and optional `openpiv-rust` via `backend="rust"`/`"auto"`.
+*""")
+    return
 
 
 @app.cell(hide_code=True)

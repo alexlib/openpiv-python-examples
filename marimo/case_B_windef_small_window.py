@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -13,6 +13,17 @@ import marimo
 
 __generated_with = "0.23.0"
 app = marimo.App()
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
 
 
 @app.cell
@@ -63,7 +74,7 @@ def _(new_windef, pathlib, windef):
 
     'Region of interest'
     # (50,300,50,300) #Region of interest: (xmin,xmax,ymin,ymax) or 'full' for full image
-    settings.ROI = 'full'
+    settings.roi = 'full'
 
     'Image preprocessing'
     # 'None' for no masking, 'edges' for edges masking, 'intensity' for intensity masking
@@ -119,8 +130,8 @@ def _(new_windef, pathlib, windef):
     # The validation is done at each iteration based on three filters.
     # The first filter is based on the min/max ranges. Observe that these values are defined in
     # terms of minimum and maximum displacement in pixel/frames.
-    settings.MinMax_U_disp = (-30, 30)
-    settings.MinMax_V_disp = (-30, 30)
+    settings.min_max_u_disp = (-30, 30)
+    settings.min_max_v_disp = (-30, 30)
     # The second filter is based on the global STD threshold
     settings.std_threshold = 4  # threshold of the std validation
     # The third filter is the median test (not normalized at the moment)

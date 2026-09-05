@@ -1,8 +1,8 @@
 # /// script
-# requires-python = ">="3.11"
+# requires-python = ">=3.11"
 # dependencies = [
 #     "marimo",
-#     "openpiv",
+#     "openpiv>=0.26.0",
 #     "numpy",
 #     "matplotlib",
 #     "imageio",
@@ -20,6 +20,25 @@ def _():
     import marimo as mo
 
     return (mo,)
+
+@app.cell
+def _():
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    try:
+        import openpiv_rust
+        print("openpiv-rust available — Rust backend enabled")
+    except ImportError:
+        print("openpiv-rust not installed — pip install openpiv[rust] for faster Rust backend")
+    return
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""*
+Requires `openpiv>=0.26.0`. New in 0.26.0: `scipy.fft` default backend (2-3x faster) and optional `openpiv-rust` via `backend="rust"`/`"auto"`.
+*""")
+    return
 
 
 @app.cell(hide_code=True)
@@ -61,14 +80,14 @@ def _(pathlib, windef):
 
     'Region of interest'
     # (50,300,50,300) #Region of interest: (xmin,xmax,ymin,ymax) or 'full' for full image
-    settings.ROI = 'full'
+    settings.roi = 'full'
 
     'Image preprocessing'
     # 'None' for no flaging, 'edges' for edges flaging, 'intensity' for intensity flaging
     # WARNING: This part is under development so better not to use flagS
-    settings.dynamic_flaging_method = 'None'
-    settings.dynamic_flaging_threshold = 0.005
-    settings.dynamic_flaging_filter_size = 7
+    settings.dynamic_masking_method = 'None'
+    settings.dynamic_masking_threshold = 0.005
+    settings.dynamic_masking_filter_size = 7
 
     settings.deformation_method = 'symmetric'
 
@@ -97,7 +116,7 @@ def _(pathlib, windef):
     # method used to calculate the signal to noise ratio 'peak2peak' or 'peak2mean'
     settings.sig2noise_method = 'peak2peak'
     # select the width of the flaged to flaged out pixels next to the main peak
-    settings.sig2noise_flag = 2
+    settings.sig2noise_mask = 2
     # If extract_sig2noise==False the values in the signal to noise ratio
     # output column are set to NaN
     'vector validation options'
@@ -109,8 +128,8 @@ def _(pathlib, windef):
     # The validation is done at each iteration based on three filters.
     # The first filter is based on the min/max ranges. Observe that these values are defined in
     # terms of minimum and maximum displacement in pixel/frames.
-    settings.MinMax_U_disp = (-30, 30)
-    settings.MinMax_V_disp = (-30, 30)
+    settings.min_max_u_disp = (-30, 30)
+    settings.min_max_v_disp = (-30, 30)
     # The second filter is based on the global STD threshold
     settings.std_threshold = 7  # threshold of the std validation
     # The third filter is the median test (not normalized at the moment)
@@ -185,6 +204,30 @@ def _(filters, np, process, scaling, settings, tools, validation):
     tools.display_vector_field('test1.vec', scale=75, width=0.0035)
     return
 
+
+
+@app.cell
+def _():
+    import marimo as mo
+    mo.md(r"""### OpenPIV 0.26.0: `scipy.fft` and Rust backends in `windef`
+`PIVSettings(backend="scipy"|"rust"|"auto")` controls the FFT engine. `auto` (default) prefers Rust when installed.
+""")
+    return
+
+@app.cell
+def _(frame_a, frame_b, windef):
+    import importlib.metadata
+    print("openpiv", importlib.metadata.version("openpiv"))
+    from openpiv.pyprocess import HAS_RUST
+    print("HAS_RUST =", HAS_RUST)
+    settings = windef.PIVSettings()
+    for backend in (["scipy", "rust"] if HAS_RUST else ["scipy"]):
+        settings.backend = backend
+        print(f"\\n--- backend={backend} ---")
+        from openpiv.pyprocess import extended_search_area_piv
+        u, v, s2n = extended_search_area_piv(frame_a, frame_b, window_size=settings.windowsizes[0], overlap=settings.overlap[0], sig2noise_method="peak2peak", backend=backend)
+        print(f"single-pass mean u={u.mean():.2f}, v={v.mean():.2f}")
+    return
 
 if __name__ == "__main__":
     app.run()
