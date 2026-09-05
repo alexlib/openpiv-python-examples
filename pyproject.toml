@@ -19,8 +19,6 @@ dependencies = [
 ]
 
 [tool.ruff]
-# Select rules (E: error, F: pyflakes, B: bugbear, I: isort)
-select = ["E", "F", "B", "I"]
 # Set the line length
 line-length = 88
 # Directories to exclude from linting
@@ -30,10 +28,14 @@ exclude = [
     ".ruff_cache",
     ".venv",
     "docs",
+    "marimo",
+    "notebooks",
     "openpiv-tutorials/_extensions",
 ]
 
 [tool.ruff.lint]
+# Select rules (E: error, F: pyflakes, B: bugbear, I: isort)
+select = ["E", "F", "B", "I"]
 # Specific rules to ignore (if any)
 ignore = []
 
